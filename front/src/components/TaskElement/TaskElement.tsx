@@ -86,7 +86,7 @@ const Div: React.FC<Props> = ({ id, task, deleteTask }) => {
         className='relative bottom-11 text-cyan-200 text-2xl select-none'
         style={{ x: gone ? end : 0 }}
       >
-        {!gone && `Delete &{currentOffset}`}
+        Delete
       </animated.h3>
     </animated.div>
   );
