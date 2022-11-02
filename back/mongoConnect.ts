@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import { config } from 'dotenv';
 
 const env = config();
+console.log(env.parsed?.MONGO_URI);
 
 const connect = async () => {
   if (env.parsed !== undefined) {
