@@ -12,7 +12,7 @@ const initialData: { id: string; task: string }[] = [];
 //   }
 // }
 
-const BACKEND_ATOM = atom('http://localhost:1337');
+const BACKEND_ATOM = atom('https://dotoback.onrender.com');
 const sheetEmptyAtom = atom(true);
 const textAtom = atom('');
 const idAtom = atom(1);
