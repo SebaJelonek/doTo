@@ -1,15 +1,25 @@
 import React, { useEffect } from 'react';
 import { useAtom } from 'jotai';
-import { taskListAtom } from '../../Atoms';
+import { BACKEND_ATOM, taskListAtom } from '../../Atoms';
 import { useTransition, animated } from '@react-spring/web';
 import TaskElement from '../TaskElement/TaskElement';
+import useFetch from '../../Fetch';
 
-const Container: React.FC = () => {
+interface Props {
+  list: {
+    id: string;
+    task: string;
+  }[];
+}
+
+const sheetId = '63610d3bca983db268d6c2bf';
+
+const TaskContainer: React.FC<Props> = ({ list }) => {
   const [taskList, setTaskList] = useAtom(taskListAtom);
+  const [BACKEND] = useAtom(BACKEND_ATOM);
 
   useEffect(() => {
-    // console.log(window.localStorage.getItem('taskList')?.split(','));
-    // console.log(window.localStorage.getItem('idsList')?.split(','));
+    setTaskList(list);
   });
 
   const transitions = useTransition(taskList, {
@@ -19,7 +29,18 @@ const Container: React.FC = () => {
   });
 
   const deleteTask = (taskId: string) => {
-    setTaskList((prevState) => prevState.filter(({ id }) => taskId !== id));
+    if (taskList.length === 1) {
+      setTaskList((prevState) => prevState.filter(({ id }) => taskId !== id));
+    } else {
+      setTaskList((prevState) => prevState.filter(({ id }) => taskId !== id));
+    }
+    const response = useFetch('POST', `${BACKEND}/api/task/delete`, {
+      _id: sheetId,
+      taskId,
+    });
+    response?.then((res) => {
+      console.log(res);
+    });
   };
 
   return (
@@ -33,4 +54,4 @@ const Container: React.FC = () => {
   );
 };
 
-export default Container;
+export default TaskContainer;

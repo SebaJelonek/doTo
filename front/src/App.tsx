@@ -1,16 +1,15 @@
 import { Provider } from 'jotai';
-import InputField from './components/InputField/InputField';
-import Container from './components/TaskContainer/TaskContainer';
+
+import Sheet from './components/Sheet/Sheet';
 import './App.css';
 
 function App() {
   return (
-    <Provider>
-      <div className='App'>
-        <InputField name='Task name' type='text' />
-        <Container />
-      </div>
-    </Provider>
+    <div className='App'>
+      <Provider>
+        <Sheet />
+      </Provider>
+    </div>
   );
 }
 

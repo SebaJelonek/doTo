@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useAtom } from 'jotai';
-import { taskListAtom } from '../../Atoms';
+import { BACKEND_ATOM, taskListAtom } from '../../Atoms';
+import useFetch from '../../Fetch';
+const sheetId = '63610d3bca983db268d6c2bf';
 
 interface Props {
   name: string;
@@ -10,17 +12,19 @@ interface Props {
 const InputField: React.FC<Props> = ({ name, type }) => {
   const [inputValue, setInputValue] = useState('');
   const [taskList, setTaskList] = useAtom(taskListAtom);
+  const [BACKEND] = useAtom(BACKEND_ATOM);
 
   useEffect(() => {
-    let list: string[] = [];
-    let ids: string[] = [];
+    console.log(taskList);
 
-    taskList.forEach(({ id, task }) => {
-      task !== null && list.push(task);
-      id !== null && ids.push(id);
-      window.localStorage.setItem('taskList', list.toString());
-      window.localStorage.setItem('idsList', ids.toString());
-    });
+    // let list: string[] = [];
+    // let ids: string[] = [];
+    // taskList.forEach(({ id, task }) => {
+    //   list.push(task);
+    //   ids.push(id);
+    //   window.localStorage.setItem('taskList', list.toString());
+    //   window.localStorage.setItem('idsList', ids.toString());
+    // });
   }, [taskList]);
 
   const onChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -28,9 +32,19 @@ const InputField: React.FC<Props> = ({ name, type }) => {
   };
 
   const onSubmitHandler = (event: React.FormEvent<HTMLFormElement>) => {
+    console.log(taskList);
     event.preventDefault();
-    let id = (taskList.length + Math.random()).toString();
-    setTaskList((prevState) => [...prevState, { id, task: inputValue }]);
+    const newTask = { task: inputValue, sheetId, taskList };
+    const response = useFetch('POST', `${BACKEND}/api/task/new`, newTask);
+    response?.then(({ status, _id }) => {
+      console.log(taskList);
+      if (status === 200) {
+        setTaskList((prevState) => [
+          ...prevState,
+          { id: _id.toString(), task: inputValue },
+        ]);
+      }
+    });
 
     setInputValue('');
   };
