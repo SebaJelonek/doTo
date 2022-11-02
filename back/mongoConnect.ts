@@ -1,13 +1,9 @@
 import mongoose from 'mongoose';
-import { config } from 'dotenv';
-
-const env = config();
-console.log(env.parsed?.MONGO_URI);
 
 const connect = async () => {
-  if (env.parsed !== undefined) {
+  if (process.env.MONGO_URI !== undefined) {
     try {
-      await mongoose.connect(env.parsed.MONGO_URI, () => {
+      await mongoose.connect(process.env.MONGO_URI, () => {
         console.log('connected');
       });
     } catch (error) {
