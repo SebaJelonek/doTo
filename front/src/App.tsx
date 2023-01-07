@@ -1,6 +1,7 @@
 import { Provider } from 'jotai';
 
-import Sheet from './components/Sheet/Sheet';
+import Sheet from './components/TaskList/Sheet/Sheet';
+import Navbar from './components/Navigation/Navbar/Navbar';
 import './App.css';
 
 function App() {
@@ -8,6 +9,7 @@ function App() {
     <div className='App'>
       <Provider>
         <Sheet />
+        <Navbar />
       </Provider>
     </div>
   );

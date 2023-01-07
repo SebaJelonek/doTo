@@ -1,4 +1,6 @@
 import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const connect = async () => {
   if (process.env.MONGO_URI !== undefined) {

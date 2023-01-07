@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAtom } from 'jotai';
-import { BACKEND_ATOM, taskListAtom } from '../../Atoms';
-import useFetch from '../../Fetch';
+import { BACKEND_ATOM, taskListAtom } from '../../../Atoms';
+import useFetch from '../../../Fetch';
 const sheetId = '63610d3bca983db268d6c2bf';
 
 interface Props {
@@ -51,7 +51,7 @@ const InputField: React.FC<Props> = ({ name, type }) => {
 
   return (
     <div>
-      <form className='mb-5 h-9' onSubmit={onSubmitHandler}>
+      <form className='mb-4 h-9' onSubmit={onSubmitHandler}>
         <input
           className='p-1 text-xl rounded-lg bg-slate-800 text-cyan-100 peer'
           onChange={onChangeHandler}

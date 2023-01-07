@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { useAtom } from 'jotai';
-import { BACKEND_ATOM, taskListAtom } from '../../Atoms';
+import { BACKEND_ATOM, taskListAtom } from '../../../Atoms';
 import { useTransition, animated } from '@react-spring/web';
 import TaskElement from '../TaskElement/TaskElement';
-import useFetch from '../../Fetch';
+import deleteTaskFunction from './deleteTaskFunction';
 
 interface Props {
   list: {
@@ -28,23 +28,11 @@ const TaskContainer: React.FC<Props> = ({ list }) => {
     leave: {},
   });
 
-  const deleteTask = (taskId: string) => {
-    if (taskList.length === 1) {
-      setTaskList((prevState) => prevState.filter(({ id }) => taskId !== id));
-    } else {
-      setTaskList((prevState) => prevState.filter(({ id }) => taskId !== id));
-    }
-    const response = useFetch('POST', `${BACKEND}/api/task/delete`, {
-      _id: sheetId,
-      taskId,
-    });
-    response?.then((res) => {
-      console.log(res);
-    });
-  };
+  const deleteTask = (taskId: string) =>
+    deleteTaskFunction(taskId, taskList, setTaskList, BACKEND, sheetId);
 
   return (
-    <div>
+    <div className='flex flex-col items-end'>
       {transitions((styles, { id, task }) => (
         <animated.div style={{ ...styles, position: 'relative' }} key={id}>
           <TaskElement task={task} id={id} deleteTask={deleteTask} />

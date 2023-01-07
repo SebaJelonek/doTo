@@ -28,7 +28,7 @@ const Div: React.FC<Props> = ({ id, task, deleteTask }) => {
     config: { duration: 1260 },
   });
 
-  let red = currentOffset * -1.5;
+  let red = 70 + currentOffset * -1.5;
 
   useEffect(() => {
     currentOffset <= -180 && setGone(true);
@@ -83,7 +83,7 @@ const Div: React.FC<Props> = ({ id, task, deleteTask }) => {
       </div>
 
       <animated.h3
-        className='relative bottom-11 text-cyan-200 text-2xl select-none'
+        className='relative bottom-11 text-cyan-200 text-2xl select-none text-right pr-3'
         style={{ x: gone ? end : 0 }}
       >
         Delete
