@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useAtom } from 'jotai';
 import { BACKEND_ATOM, taskListAtom } from '../../../Atoms';
 import { useTransition, animated } from '@react-spring/web';
-import TaskElement from '../TaskElement/TaskElement';
+import TaskElement from '../ShoppingListElement/ShoppingListElement';
 import deleteTaskFunction from './deleteTaskFunction';
 
 interface Props {
@@ -14,7 +14,7 @@ interface Props {
 
 const sheetId = '63610d3bca983db268d6c2bf';
 
-const TaskContainer: React.FC<Props> = ({ list }) => {
+const ShoppingListContainer: React.FC<Props> = ({ list }) => {
   const [taskList, setTaskList] = useAtom(taskListAtom);
   const [BACKEND] = useAtom(BACKEND_ATOM);
 
@@ -42,4 +42,4 @@ const TaskContainer: React.FC<Props> = ({ list }) => {
   );
 };
 
-export default TaskContainer;
+export default ShoppingListContainer;

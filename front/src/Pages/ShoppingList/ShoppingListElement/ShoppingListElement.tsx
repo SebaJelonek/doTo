@@ -8,7 +8,7 @@ interface Props {
   deleteTask: (id: string) => void;
 }
 
-const Div: React.FC<Props> = ({ id, task, deleteTask }) => {
+const ShoppingListElement: React.FC<Props> = ({ id, task, deleteTask }) => {
   const [currentOffset, setCurrentOffset] = useState(0);
   const [deleted, setDeleted] = useState(false);
   const [gone, setGone] = useState(false);
@@ -92,4 +92,4 @@ const Div: React.FC<Props> = ({ id, task, deleteTask }) => {
   );
 };
 
-export default Div;
+export default ShoppingListElement;

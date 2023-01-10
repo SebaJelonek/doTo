@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAtom } from 'jotai';
-import { BACKEND_ATOM, taskListAtom } from '../../../Atoms';
-import useFetch from '../../../Fetch';
+import { BACKEND_ATOM, taskListAtom } from '../../Atoms';
+import useFetch from '../../Fetch';
 const sheetId = '63610d3bca983db268d6c2bf';
 
 interface Props {
@@ -14,30 +14,15 @@ const InputField: React.FC<Props> = ({ name, type }) => {
   const [taskList, setTaskList] = useAtom(taskListAtom);
   const [BACKEND] = useAtom(BACKEND_ATOM);
 
-  useEffect(() => {
-    console.log(taskList);
-
-    // let list: string[] = [];
-    // let ids: string[] = [];
-    // taskList.forEach(({ id, task }) => {
-    //   list.push(task);
-    //   ids.push(id);
-    //   window.localStorage.setItem('taskList', list.toString());
-    //   window.localStorage.setItem('idsList', ids.toString());
-    // });
-  }, [taskList]);
-
   const onChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.currentTarget.value);
   };
 
   const onSubmitHandler = (event: React.FormEvent<HTMLFormElement>) => {
-    console.log(taskList);
     event.preventDefault();
     const newTask = { task: inputValue, sheetId, taskList };
     const response = useFetch('POST', `${BACKEND}/api/task/new`, newTask);
     response?.then(({ status, _id }) => {
-      console.log(taskList);
       if (status === 200) {
         setTaskList((prevState) => [
           ...prevState,
