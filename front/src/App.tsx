@@ -1,15 +1,15 @@
 import { Provider } from 'jotai';
-import Navigation from './Router/Navigation/Navigation';
+import Navbar from './components/Navigation/Navbar/Navbar';
+import Container from './components/Container/Container';
+
 import './App.css';
-import { useEffect, useState } from 'react';
 
 function App() {
   return (
     <div className='App'>
       <Provider>
-        <div>
-          <Navigation />
-        </div>
+        <Container />
+        <Navbar />
       </Provider>
     </div>
   );

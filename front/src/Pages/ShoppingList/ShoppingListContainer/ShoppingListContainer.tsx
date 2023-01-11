@@ -32,7 +32,7 @@ const ShoppingListContainer: React.FC<Props> = ({ list }) => {
     deleteTaskFunction(taskId, taskList, setTaskList, BACKEND, sheetId);
 
   return (
-    <div className='flex flex-col items-end'>
+    <div className='flex flex-col items-center'>
       {transitions((styles, { id, task }) => (
         <animated.div style={{ ...styles, position: 'relative' }} key={id}>
           <TaskElement task={task} id={id} deleteTask={deleteTask} />

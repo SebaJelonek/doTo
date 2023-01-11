@@ -9,9 +9,10 @@ const sheetId = '63610d3bca983db268d6c2bf';
 
 interface Props {
   height: number;
+  width: number;
 }
 
-const ShoppingList: React.FC<Props> = ({ height }) => {
+const ShoppingList: React.FC<Props> = ({ height, width }) => {
   const [taskList, setTaskList] = useAtom(taskListAtom);
   const [sheetEmpty, setSheetEmpty] = useAtom(sheetEmptyAtom);
   const [BACKEND] = useAtom(BACKEND_ATOM);
@@ -29,10 +30,13 @@ const ShoppingList: React.FC<Props> = ({ height }) => {
   }, []);
 
   return (
-    <div className='p-8 pt-6 pb-0 ' style={{ minHeight: height - 56 }}>
+    <div
+      className='p-8 pt-7 pb-0'
+      style={{ minHeight: height - 56, minWidth: width }}
+    >
       {!sheetEmpty ? (
         <div key={sheetId}>
-          <InputField name='Task name' type='text' />
+          <InputField name='Item name' type='text' />
           <TaskContainer list={taskList} />
         </div>
       ) : (
@@ -41,7 +45,7 @@ const ShoppingList: React.FC<Props> = ({ height }) => {
             Shopping list is empty
           </h2>
           <h2 className='text-3xl text-amber-300 mb-8'>Add new item below</h2>
-          <InputField name='Task name' type='text' />
+          <InputField name='Item name' type='text' />
         </div>
       )}
     </div>

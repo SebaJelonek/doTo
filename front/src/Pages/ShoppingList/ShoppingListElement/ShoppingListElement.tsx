@@ -63,12 +63,12 @@ const ShoppingListElement: React.FC<Props> = ({ id, task, deleteTask }) => {
         marginBottom,
         backgroundColor: `rgb(${red} 25 25)`,
       }}
-      className={`h-16 w-72 rounded-2xl`}
+      className={`h-16 w-64 rounded-2xl`}
     >
       <div>
         <div>
           <animated.div
-            className='bg-slate-200 h-20 w-72 rounded-2xl relative z-10 flex justify-center items-center'
+            className='bg-slate-200 h-20 w-64 rounded-2xl relative z-10 flex justify-center items-center'
             {...bind()}
             style={{ x, height, touchAction: 'none' }}
           >

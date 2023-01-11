@@ -17,5 +17,15 @@ const sheetEmptyAtom = atom(true);
 const textAtom = atom('');
 const idAtom = atom(1);
 const taskListAtom = atom(initialData);
+const marginLeftAtom = atom(0);
+const widthAtom = atom(window.screen.width);
 
-export { textAtom, idAtom, taskListAtom, BACKEND_ATOM, sheetEmptyAtom };
+export {
+  textAtom,
+  idAtom,
+  taskListAtom,
+  BACKEND_ATOM,
+  sheetEmptyAtom,
+  marginLeftAtom,
+  widthAtom,
+};
