@@ -1,5 +1,5 @@
 import { Provider } from 'jotai';
-import Navbar from './components/Navigation/Navbar/Navbar';
+import { Navbar } from './components/Navigation/Navbar/Navbar';
 import Container from './components/Container/Container';
 
 import './App.css';

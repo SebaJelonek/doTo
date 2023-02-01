@@ -1,7 +1,10 @@
-const useFetch = (
+export const useFetch = (
   method: 'GET' | 'POST',
   url: string,
-  body?: { task: string } | { _id: string; taskId: string }
+  body?:
+    | { task: string }
+    | { _id: string; taskId: string }
+    | { item: string; sheetId: string }
 ) => {
   if (method === 'GET') {
     const fetchData = async () => {
@@ -26,5 +29,3 @@ const useFetch = (
     return postData();
   }
 };
-
-export default useFetch;
