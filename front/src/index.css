@@ -1,9 +1,7 @@
 body {
   background-color: #0f172a;
 }
-#task-text {
-  font-family: 'Itim', cursive;
-}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

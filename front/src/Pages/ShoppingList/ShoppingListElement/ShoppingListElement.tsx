@@ -4,33 +4,25 @@ import { useDrag } from '@use-gesture/react';
 
 interface Props {
   id: string | null;
-  item: string | null;
-  deleteShoppingItem: (id: string) => void;
+  task: string | null;
+  deleteTask: (id: string) => void;
 }
 
-const ShoppingListElement: React.FC<Props> = ({
-  id,
-  item,
-  deleteShoppingItem,
-}) => {
+const ShoppingListElement: React.FC<Props> = ({ id, task, deleteTask }) => {
   const [currentOffset, setCurrentOffset] = useState(0);
   const [deleted, setDeleted] = useState(false);
   const [gone, setGone] = useState(false);
-
   const [{ x }, api] = useSpring(() => ({
     x: 0,
   }));
-
   const { height } = useSpring({
     height: deleted ? 0 : 80,
     config: { duration: 256 },
   });
-
   const { marginBottom } = useSpring({
     marginBottom: deleted ? 0 : 16,
     config: { duration: 64 },
   });
-
   const { x: end } = useSpring({
     x: gone ? -645 : 0,
     config: { duration: 1260 },
@@ -51,7 +43,7 @@ const ShoppingListElement: React.FC<Props> = ({
   useEffect(() => {
     if (deleted) {
       setTimeout(() => {
-        id !== null && deleteShoppingItem(id);
+        id !== null && deleteTask(id);
       }, 900);
     }
   }, [deleted]);
@@ -76,22 +68,22 @@ const ShoppingListElement: React.FC<Props> = ({
       <div>
         <div>
           <animated.div
-            className='relative z-10 flex h-20 w-64 items-center justify-center rounded-2xl bg-slate-200'
+            className='bg-slate-200 h-20 w-64 rounded-2xl relative z-10 flex justify-center items-center'
             {...bind()}
             style={{ x, height, touchAction: 'none' }}
           >
             <animated.h3
-              className='z-20 touch-none select-none p-1 text-lg text-cyan-600'
+              className='p-1 text-cyan-600 text-lg z-20 select-none touch-none'
               {...bind()}
             >
-              {item}
+              {task}
             </animated.h3>
           </animated.div>
         </div>
       </div>
 
       <animated.h3
-        className='relative bottom-11 select-none pr-3 text-right text-2xl text-cyan-200'
+        className='relative bottom-11 text-cyan-200 text-2xl select-none text-right pr-3'
         style={{ x: gone ? end : 0 }}
       >
         Delete
