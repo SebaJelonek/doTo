@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import getURL from './getURL';
 
 interface Props {
   src: string;
@@ -10,6 +11,7 @@ const Icon: React.FC<Props> = ({ src, currentSite, active }) => {
   const [bgColor, setBgColor] = useState('bg-neutral-600');
   let isActive;
   if (active === src) isActive = { backgroundColor: '#a3a3a3' };
+
   const blink = () => {
     setBgColor('bg-neutral-400');
     setTimeout(() => {
@@ -24,7 +26,7 @@ const Icon: React.FC<Props> = ({ src, currentSite, active }) => {
       style={isActive}
       onClick={blink}
     >
-      <img className='w-12' src={src} alt={src.toString()} />
+      <img className='w-12' src={src} alt={getURL(src)} />
     </div>
   );
 };
