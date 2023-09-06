@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useAtom } from 'jotai';
-import InputField from '../../components/Form/Form';
+import InputField from '../../components/Form/InputField';
 import ShoppingListContainer from './Layout/ShoppingListContainer/ShoppingListContainer';
 import {
   BACKEND_ATOM,

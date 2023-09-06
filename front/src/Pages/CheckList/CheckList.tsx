@@ -2,7 +2,7 @@ import { useAtom } from 'jotai';
 import React, { Fragment, useState } from 'react';
 import { heightAtom, widthAtom } from '../../Atoms';
 import { CheckListElement } from './Layout/CheckListElement/CheckListElement';
-import Form from '../../components/Form/Form';
+import Form from '../../components/Form/InputField';
 
 let taskArray: {
   id: string;
