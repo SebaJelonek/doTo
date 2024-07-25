@@ -25,6 +25,7 @@ jobs:
         run: |
           dir
           cd back
+          dir
           npm run build
           npm run test --if-present
       
