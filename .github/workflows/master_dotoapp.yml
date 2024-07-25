@@ -49,6 +49,8 @@ jobs:
         uses: azure/webapps-deploy@v3
         id: deploy-to-webapp
         with:
+          name: Azure Login
+          uses: Azure/login@v2.1.1
           app-name: 'doToApp'
           slot-name: 'production'
           package: back
