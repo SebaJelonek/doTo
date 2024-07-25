@@ -23,6 +23,7 @@ jobs:
 
       - name: npm install, build, and test
         run: |
+          dir
           cd back
           npm run build
           npm run test --if-present
