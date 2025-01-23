@@ -11,11 +11,12 @@ const initialData: { id: string; item: string }[] = [];
 //     initialData.push(taskObject);
 //   }
 // }
-const SheetIDAtom = atom('63da5d9e88970ccfe148df67');
-const BACKEND_ATOM = atom('http://localhost:1337');
 
-// const SheetIDAtom = atom('63610d3bca983db268d6c2bf');
-// const BACKEND_ATOM = atom('https://dotoback.onrender.com');
+const SheetIDAtom = atom('63da5d9e88970ccfe148df67'); // production
+const BACKEND_ATOM = atom('http://localhost:1337'); // production
+
+// const SheetIDAtom = atom('63610d3bca983db268d6c2bf'); // dev
+// const BACKEND_ATOM = atom('https://dotoback.onrender.com'); // dev
 const sheetEmptyAtom = atom(true);
 const textAtom = atom('');
 const idAtom = atom(1);

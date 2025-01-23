@@ -2,9 +2,11 @@ export const useFetch = (
   method: 'GET' | 'POST',
   url: string,
   body?:
-    | { task: string }
-    | { _id: string; taskId: string }
+    | { item: string }
+    | { _id: string; itemId: string }
     | { item: string; sheetId: string }
+    | { task: string; sheetId: string }
+    | { _id: string; createDate: number; sheetId: string }
 ) => {
   if (method === 'GET') {
     const fetchData = async () => {

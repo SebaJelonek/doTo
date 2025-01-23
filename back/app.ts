@@ -2,7 +2,8 @@ import cors from 'cors';
 import express from 'express';
 import { connectToDataBase } from './mongoConnect';
 import SheetRouter from './Router/SheetRouter';
-import TaskRouter from './Router/ItemRounter';
+import { ItemRouter } from './Router/ItemRounter';
+import { TaskRouter } from './Router/TaskRouter';
 
 connectToDataBase();
 
@@ -13,6 +14,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(SheetRouter);
+app.use(ItemRouter);
 app.use(TaskRouter);
 
 app.listen(port, () => console.log('listening on port: ' + port));

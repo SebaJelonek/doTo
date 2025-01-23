@@ -1,5 +1,5 @@
 import type { RequestHandler } from 'express';
-import Sheet from '../Model/Sheet';
+import { Sheet } from '../Model/Sheet';
 import { Item } from '../Model/Item';
 
 const itemNew: RequestHandler = async (req, res) => {
@@ -11,7 +11,7 @@ const itemNew: RequestHandler = async (req, res) => {
     await Sheet.findOneAndUpdate(
       { _id: sheetId },
       {
-        $push: { tasksIds: _id },
+        $push: { itemsIds: _id },
       }
     );
     res.json({ _id, status: 200 });
