@@ -1,7 +1,7 @@
 import { useAtom } from 'jotai';
 import React from 'react';
 import { heightAtom, widthAtom } from '../../Atoms';
-import InputField from '../../components/Form/Form';
+import InputField from '../../components/Form/InputField';
 
 const SharedList: React.FC = () => {
   const [width] = useAtom(widthAtom);
