@@ -3,12 +3,17 @@ package server
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 
+	"github.com/SebaJelonek/doTo/internals/handlers"
 	"github.com/joho/godotenv"
 )
+
+type User struct {
+	ID   int    `json:"id"`
+	Name string `json:"name"`
+}
 
 func StartServer(dbConnection *sql.DB) {
 	err := godotenv.Load()
@@ -16,21 +21,8 @@ func StartServer(dbConnection *sql.DB) {
 		fmt.Println("Error loading .env file")
 	}
 
-	rows, err := dbConnection.Query("SELECT id, name FROM users")
-	if err != nil {
-		log.Fatalf("Query failed: %v", err)
-	}
-	defer rows.Close()
-
-	for rows.Next() {
-		var id int
-		var name string
-		if err := rows.Scan(&id, &name); err != nil {
-			log.Println("Error scanning row:", err)
-			continue
-		}
-		log.Printf("Row: ID=%d, Name=%s", id, name)
-	}
+	http.HandleFunc("/", handlers.Root(dbConnection))
+	http.HandleFunc("/api/add-user", handlers.AddUser(dbConnection))
 
 	port := os.Getenv("PORT")
 	fmt.Printf("starting server at port: %v\n", port)
