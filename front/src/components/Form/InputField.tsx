@@ -31,9 +31,10 @@ const InputField: React.FC<Props> = ({ name, type, onSubmitHandler }) => {
           value={inputValue}
         />
         <label
-          className={`relative inline-block h-6 w-60 text-xl text-indigo-200 transition-all duration-300 peer-focus-within:-top-16.5 peer-focus-within:right-8 ${
-            inputValue === '' ? 'right-20 -top-8' : 'right-8 -top-16.5'
-          }`}
+          className={`relative inline-block h-6 w-60 text-xl text-indigo-200 transition-all duration-300 peer-focus-within:-top-16.5 peer-focus-within:right-8 
+          ${inputValue === '' ? 'right-20 -top-8' : 'right-8 -top-16.5'}
+          
+          `}
           htmlFor={name}
         >
           {name}

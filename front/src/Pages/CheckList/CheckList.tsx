@@ -2,11 +2,11 @@ import { useAtom } from 'jotai';
 import React, { Fragment, useEffect, useState } from 'react';
 import { BACKEND_ATOM, heightAtom, SheetIDAtom, widthAtom } from '../../Atoms';
 import { CheckListElement } from './Layout/CheckListElement/CheckListElement';
-import Form from '../../components/Form/Form';
 import { useFetchTasks } from './Logic/useFetchTasks';
 import { submitTask } from './Logic/submitTask';
 import { deleteTask } from './Logic/deleteTask';
 import deleteIcon from '../../assets/Icons/delete.png';
+import Form from '../../components/Form/InputField';
 
 let taskArrayType: {
   id: string;
