@@ -7,25 +7,27 @@ interface Props {
   id: string;
   task: string;
   isChecked: boolean;
-  onDelete: (id: string) => void;
+  createDate: number;
+  onDelete: (id: string, createDate: number) => void;
 }
 
 export const CheckListElement: React.FC<Props> = ({
   id,
   task,
   isChecked,
+  createDate,
   onDelete,
 }) => {
   const [checked, setChecked] = useState(isChecked);
   const [trash, setTrash] = useState(false);
 
   const deleteFun = () => {
-    onDelete(id);
+    onDelete(id, createDate);
   };
 
   const showDeleteButton = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
-    checked === true && setTrash(true);
+    checked === true && setTrash(!trash);
   };
 
   return (

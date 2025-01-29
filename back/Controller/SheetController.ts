@@ -4,6 +4,7 @@ import { Item } from '../Model/Item';
 
 const sheetFind: RequestHandler = async (req, res) => {
   const { _id } = req.params;
+
   const items = [];
   try {
     const sheet = await Sheet.findById(_id);

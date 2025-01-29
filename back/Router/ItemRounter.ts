@@ -1,8 +1,7 @@
 import { Router } from 'express';
-import { itemNew, itemDelete } from '../Controller/ItemsController';
-const TaskRouter = Router();
+import { itemNew, itemDelete } from '../Controller/ItemController';
 
-TaskRouter.post('/api/task/delete', itemDelete); //task
-TaskRouter.post('/api/task/new/', itemNew); //task
+export const ItemRouter = Router();
 
-export default TaskRouter;
+ItemRouter.post('/api/item/delete', itemDelete);
+ItemRouter.post('/api/item/new', itemNew);

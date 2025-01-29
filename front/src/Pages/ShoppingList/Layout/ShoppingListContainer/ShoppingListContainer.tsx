@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTransition, animated } from '@react-spring/web';
 import { useAtom } from 'jotai';
-import { BACKEND_ATOM, shoppingListAtom } from '../../../../Atoms';
+import { BACKEND_ATOM, SheetIDAtom, shoppingListAtom } from '../../../../Atoms';
 import ShoppingListElement from '../ShoppingListElement/ShoppingListElement';
 import { deleteShoppingItem as deleteShoppingItemFunction } from '../../Logic/deleteShoppingItem';
 
@@ -12,23 +12,10 @@ interface Props {
   }[];
 }
 
-const sheetId = '63610d3bca983db268d6c2bf';
-
 const ShoppingListContainer: React.FC<Props> = ({ list }) => {
+  const [sheetId] = useAtom(SheetIDAtom);
   const [shoppingList, setShoppingList] = useAtom(shoppingListAtom);
   const [BACKEND] = useAtom(BACKEND_ATOM);
-
-  // useEffect(() => {
-  //   setShoppingList(list);
-  //   console.log('list ');
-  //   console.log(list);
-  //   console.log(list[0].item);
-
-  //   console.log('shoppingList ');
-  //   console.log(shoppingList);
-
-  //   console.log('what does it do?');
-  // });
 
   const transitions = useTransition(shoppingList, {
     from: { top: -10000 },

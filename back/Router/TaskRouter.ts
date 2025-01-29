@@ -1,7 +1,9 @@
 import { Router } from 'express';
 
-// import { taskNew } from '../Controller/TaskController';
+import { deleteTask, newTask, tasks } from '../Controller/TaskController';
 
 export const TaskRouter = Router();
 
-// TaskRouter.post('api/task/new', taskNew);
+TaskRouter.get('/api/task/:_id', tasks);
+TaskRouter.post('/api/task/new', newTask);
+TaskRouter.post('/api/task/delete', deleteTask);
