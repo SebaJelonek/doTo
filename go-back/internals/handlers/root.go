@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-type User struct {
+type DBUser struct {
 	ID   int    `json:"id"`
 	Name string `json:"name"`
 }
@@ -19,10 +19,10 @@ func Root(dbConnection *sql.DB) http.HandlerFunc {
 	}
 	defer rows.Close()
 
-	var users []User
+	var users []DBUser
 
 	for rows.Next() {
-		var user User
+		var user DBUser
 		if err := rows.Scan(&user.ID, &user.Name); err != nil {
 			log.Println("error scanning row: ", err)
 			continue
