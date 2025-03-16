@@ -33,6 +33,10 @@ jobs:
           tsc -b
         shell: bash
 
+
+      - name: Check if MONGO_URI is set
+        run: echo $MONGO_URI
+
       - name: Rename dist to node-app
         run: mv back/dist back/node-app
         shell: bash
