@@ -57,6 +57,11 @@ jobs:
           name: node-app
           path: .
 
+      - name: Azure Login  # 👈 Uses the AZURE_CREDENTIALS secret
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.LTI_IS_SHIT }}
+
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
