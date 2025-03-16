@@ -29,6 +29,7 @@ jobs:
         run: |
           cd back
           npm install
+          npm install -g typescript # 👈 Ensure TypeScript is installed globally
           tsc -b
         shell: bash
 
