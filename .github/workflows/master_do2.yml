@@ -26,7 +26,7 @@ jobs:
           cache-dependency-path: back/package-lock.json
 
       - name: Check if MONGO_URI is set
-        run: echo $MONGO_URI
+        run: echo $env:MONGO_URI
         
       - name: Install dependencies and build TypeScript
         run: |
