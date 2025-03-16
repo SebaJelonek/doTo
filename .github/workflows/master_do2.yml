@@ -14,6 +14,9 @@ jobs:
     permissions:
       contents: read # Required for actions/checkout
 
+    env:
+      MONGO_URI: ${{ secrets.MONGO_URI }}  # Reference the secret here
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -24,9 +27,6 @@ jobs:
           node-version: '18.x'
           cache: 'npm'
           cache-dependency-path: back/package-lock.json
-
-      - name: Check if MONGO_URI is set
-        run: echo $env:MONGO_URI
         
       - name: Install dependencies and build TypeScript
         run: |
