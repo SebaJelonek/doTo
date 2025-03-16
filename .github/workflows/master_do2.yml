@@ -25,6 +25,9 @@ jobs:
           cache: 'npm'
           cache-dependency-path: back/package-lock.json
 
+      - name: Check if MONGO_URI is set
+        run: echo $MONGO_URI
+        
       - name: Install dependencies and build TypeScript
         run: |
           cd back
@@ -32,10 +35,6 @@ jobs:
           npm install -g typescript # 👈 Ensure TypeScript is installed globally
           tsc -b
         shell: bash
-
-
-      - name: Check if MONGO_URI is set
-        run: echo $MONGO_URI
 
       - name: Rename dist to node-app
         run: mv back/dist back/node-app
