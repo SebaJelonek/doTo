@@ -21,7 +21,7 @@ export const CheckListElement: React.FC<Props> = ({
   const [checked, setChecked] = useState(isChecked);
   const [trash, setTrash] = useState(false);
 
-  const deleteFun = () => {
+  const deleteFunc = () => {
     onDelete(id, createDate);
   };
 
@@ -38,7 +38,7 @@ export const CheckListElement: React.FC<Props> = ({
     >
       <CheckListTask task={task} isChecked={checked} />
       {!trash && <CheckBox checked={checked} setChecked={setChecked} />}
-      {trash && <DeleteCheckListElement deleteFun={deleteFun} />}
+      {trash && <DeleteCheckListElement deleteFunc={deleteFunc} />}
     </div>
   );
 };
