@@ -7,6 +7,8 @@ import { submitTask } from './Logic/submitTask';
 import { deleteTask } from './Logic/deleteTask';
 import deleteIcon from '../../assets/Icons/delete.png';
 import Form from '../../components/Form/InputField';
+import { MultInput } from './Layout/MultInput/MultInput';
+
 
 let taskArrayType: {
   id: string;
@@ -57,7 +59,8 @@ const CheckList: React.FC = () => {
         </Fragment>
       ) : (
         <Fragment>
-          <Form name='Enter task' type='text' onSubmitHandler={submitHandler} />
+          <MultInput/>
+          {/* <Form name='Enter task' type='text' onSubmitHandler={submitHandler} /> */}
           {taskArray.map(({ id, task, isChecked, createDate }) => {
             console.log(createDate);
             return (
@@ -73,7 +76,7 @@ const CheckList: React.FC = () => {
           })}
         </Fragment>
       )}
-      <img src={deleteIcon} className='opacity-0' alt='' />
+      {/* <img src={deleteIcon} className='opacity-0' alt='' /> */}
     </div>
   );
 };

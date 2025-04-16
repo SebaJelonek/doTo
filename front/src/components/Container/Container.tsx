@@ -2,9 +2,9 @@ import React from 'react';
 import { animated, useSpring } from '@react-spring/web';
 import { useAtom } from 'jotai';
 import { marginLeftAtom, scaleAtom } from '../../Atoms';
-import CheckList from '../../Pages/CheckList/CheckList';
-import SharedList from '../../Pages/SharedList/SharedList';
-import ShoppingList from '../../Pages/ShoppingList/ShoppingList';
+import CheckList from '../../Views/CheckList/CheckList';
+import SharedList from '../../Views/SharedList/SharedList';
+import ShoppingList from '../../Views/ShoppingList/ShoppingList';
 
 const Container: React.FC = () => {
   const [marginLeft] = useAtom(marginLeftAtom);

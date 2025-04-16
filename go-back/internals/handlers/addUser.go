@@ -18,30 +18,27 @@ func AddUser(dbConnection *sql.DB) http.HandlerFunc {
 
 		err := json.NewDecoder(r.Body).Decode(&user)
 		if err != nil {
-			http.Error(w, "something went sideways...", 500)
+			http.Error(w, "something went sideways...", 422)
 			log.Println("error", err)
 			return
 		}
+		defer r.Body.Close()
 		log.Println("we did decode name: ", user.Name)
 		result, err := dbConnection.Exec("INSERT INTO Users (Name) VALUES ($1)", user.Name)
 		if err != nil {
-			http.Error(w, "DB operation failed", 422)
-			log.Println("error: ", err)
-			return
-		}
-		log.Println("we made the query")
-		affected, err := result.RowsAffected()
-		if err != nil {
-			http.Error(w, "no rows affected...", 422)
+			http.Error(w, "DB operation failed", 500)
 			log.Println("error: ", err)
 			return
 		}
 
-		if affected < 1 {
-			http.Error(w, "no rows affected...", 422)
+		log.Println("we made the query")
+		affected, err := result.RowsAffected()
+		if err != nil || affected < 1 {
+			http.Error(w, "no rows affected...", 500)
 			log.Println("error: ", err)
 			return
 		}
+
 		log.Println("added record to db")
 		w.WriteHeader(201)
 		json.NewEncoder(w).Encode(map[string]string{

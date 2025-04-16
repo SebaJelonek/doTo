@@ -11,7 +11,7 @@ const (
 	port     = 5432
 	user     = "postgres"
 	password = "hn5trc6e"
-	dbname   = "postgres"
+	dbname   = "DoToDB"
 )
 
 var DB *sql.DB

@@ -23,7 +23,18 @@ func AddItem(dbConnection *sql.DB) http.HandlerFunc {
 			return
 		}
 		defer r.Body.Close()
-		dbConnection.Exec()
+
+		_, err = dbConnection.Exec("INSERT INTO items (name) VALUES ($1)", item.Item)
+		if err != nil {
+			http.Error(w, "Failed to insert data", 500)
+			log.Println("db query error: ", err)
+			return
+		}
+
+		w.WriteHeader(201)
+		json.NewEncoder(w).Encode(map[string]string{
+			"message": "item added",
+		})
 
 	}
 }
