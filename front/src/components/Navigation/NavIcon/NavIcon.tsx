@@ -26,7 +26,7 @@ const Icon: React.FC<Props> = ({ src, currentSite, active }) => {
       style={isActive}
       onClick={blink}
     >
-      <img className='w-12' src={src} alt={getURL(src)} />
+      <img className='w-12' src={src} />
     </div>
   );
 };
