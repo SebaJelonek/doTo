@@ -1,25 +1,21 @@
+import { useAtom } from 'jotai';
 import { useFetch } from '../../../Fetch';
+import { BACKEND_ATOM, UserAtom } from '../../../Atoms';
+
+const [BACKEND_URL] = useAtom(BACKEND_ATOM);
 
 interface IDeleteTask {
   deleteTask: (
-    _id: string,
-    createDate: number,
-    sheetId: string,
-    BACKEND: string
+    _id: number,
   ) => void;
 }
 
 export const deleteTask: IDeleteTask['deleteTask'] = (
   _id,
-  createDate,
-  sheetId,
-  BACKEND
-) => {
+  ) => {
   console.log('task ' + _id + ' has been deleted');
-  const response = useFetch('POST', `${BACKEND}/api/task/delete`, {
+  const response = useFetch('POST', `${BACKEND_URL}/api/task/delete`, {
     _id,
-    createDate,
-    sheetId,
   });
 
   response?.then((res) => {

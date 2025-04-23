@@ -2,11 +2,13 @@ export const useFetch = (
   method: 'GET' | 'POST',
   url: string,
   body?:
+    | {_id: number}
     | { item: string }
-    | { _id: string; itemId: string }
-    | { item: string; sheetId: string }
-    | { task: string; sheetId: string }
-    | { _id: string; createDate: number; sheetId: string }
+    | { _id: number; itemId: string }
+    | { item: string;  }
+    | { task:string, deadLine:number, owner:string, creator:string, priority:string}//incoming task
+    | { task:string, deadLine:number, owner:string, creator:string, priority:string}//outgoing task
+    | { _id: number; deadLine: number; }
 ) => {
   if (method === 'GET') {
     const fetchData = async () => {

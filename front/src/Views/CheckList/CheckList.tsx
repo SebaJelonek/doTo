@@ -1,6 +1,6 @@
 import { useAtom } from 'jotai';
 import React, { Fragment, useEffect, useState } from 'react';
-import { BACKEND_ATOM, heightAtom, SheetIDAtom, widthAtom } from '../../Atoms';
+import { heightAtom,  widthAtom } from '../../Atoms';
 import { CheckListElement } from './Layout/CheckListElement/CheckListElement';
 import { useFetchTasks } from './Logic/useFetchTasks';
 import { submitTask } from './Logic/submitTask';
@@ -10,43 +10,38 @@ import Form from '../../components/Form/InputField';
 import { MultInput } from './Layout/MultInput/MultInput';
 
 
-let taskArrayType: {
-  id: string;
-  task: string;
-  isChecked: boolean;
-  createDate: string;
-}[];
+let taskArrayType: { id: number; task: string; isChecked: boolean; deadLine: number, owner: string, creator: string, priority: string }[];
 
 const CheckList: React.FC = () => {
   const fetchedTasks = useFetchTasks();
   const [taskArray, setTaskArray] = useState(taskArrayType);
   const [width] = useAtom(widthAtom);
   const [height] = useAtom(heightAtom);
-  const [sheetID] = useAtom(SheetIDAtom);
-  const [BACKEND] = useAtom(BACKEND_ATOM);
-
   const pageStyle = { minHeight: height - 56, minWidth: width };
 
   useEffect(() => {
     setTaskArray(fetchedTasks);
   }, [fetchedTasks]);
 
-  const submitHandler = (inputValue: string) => {
+  const submitHandler = (taskName:string, owner:string, deadLine:number, priority: string) => {
     const createDate = Date.now();
-    submitTask(inputValue, createDate, sheetID, BACKEND);
+    submitTask(taskName, deadLine, owner, priority);
     setTaskArray((prevState) => [
       ...prevState,
       {
-        id: createDate.toString(),
-        task: inputValue,
+        id: Math.random()*1000,
+        task: taskName,
         isChecked: false,
-        createDate: createDate.toString(),
+        deadLine: Date.now(),
+        owner: "Seba",
+        creator: "Ada",
+        priority: "high"
       },
     ]);
   };
 
-  const onDelete = (_id: string, createDate: number) => {
-    deleteTask(_id, createDate, sheetID, BACKEND);
+  const onDelete = (_id: number, createDate: number) => {
+    deleteTask(_id);
     setTaskArray(taskArray.filter(({ id }) => id !== _id));
   };
 
@@ -59,17 +54,17 @@ const CheckList: React.FC = () => {
         </Fragment>
       ) : (
         <Fragment>
-          <MultInput/>
+          <MultInput onSubmit={submitHandler}/>
           {/* <Form name='Enter task' type='text' onSubmitHandler={submitHandler} /> */}
-          {taskArray.map(({ id, task, isChecked, createDate }) => {
-            console.log(createDate);
+          {taskArray.map(({ id, task, isChecked, deadLine }) => {
+          
             return (
               <CheckListElement
                 key={id}
                 id={id}
                 task={task}
                 isChecked={isChecked}
-                createDate={parseInt(createDate)}
+                deadLine={deadLine}
                 onDelete={onDelete}
               />
             );

@@ -4,11 +4,11 @@ import { BACKEND_ATOM, SheetIDAtom } from '../../../Atoms';
 import { useFetch } from '../../../Fetch';
 
 interface Tasks {
-  tasks: { id: string; task: string; isChecked: boolean; createDate: string }[];
+  tasks: { id: number; task: string; isChecked: boolean; deadLine: number, owner: string, creator: string, priority: string }[];
 }
 
 const initialTaskArray = [
-  { id: '1', task: 'This is task one', isChecked: true, createDate: '' },
+  { id: 1, task: 'This is task one', isChecked: true, deadLine: Date.now(), owner: "Seba", creator: "Ada", priority: "high" },
 ];
 
 export function useFetchTasks() {

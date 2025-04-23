@@ -4,21 +4,22 @@ import { CheckListTask } from '../CheckListTask/CheckListTask';
 import { DeleteCheckListElement } from '../DeleteCheckListElement/DeleteCheckListElement';
 import {LabelContainer} from '../Lable/LabelContainer';
 
-const labelArray = ["Seba", "Sra", "Do", "Chleba", "Nooo"]
+const labelArray:[{type:"owner", text:string, id:number}, {type:"deadline",text:string,id:number}, {type:"priority",text:string,id:number}] = [{type:"owner",text:"Seba", id:1}, {type:"deadline",text:"2025-04-18T16:34",id:2}, {type:"priority",text:"Do",id:3}]
+
 
 interface Props {
-  id: string;
+  id: number;
   task: string;
   isChecked: boolean;
-  createDate: number;
-  onDelete: (id: string, createDate: number) => void;
+  deadLine: number;
+  onDelete: (id: number, deadLine: number) => void;
 }
 
 export const CheckListElement: React.FC<Props> = ({
   id,
   task,
   isChecked,
-  createDate,
+  deadLine,
   onDelete,
 }) => {
   const [checked, setChecked] = useState(isChecked);
@@ -26,7 +27,7 @@ export const CheckListElement: React.FC<Props> = ({
   
 
   const deleteFunc = () => {
-    onDelete(id, createDate);
+    onDelete(id, deadLine);
   };
 
   const showDeleteButton = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -43,7 +44,7 @@ export const CheckListElement: React.FC<Props> = ({
         {!trash && <CheckBox onContextMenu={showDeleteButton} checked={checked} setChecked={setChecked} />}
         {trash && <DeleteCheckListElement deleteFunc={deleteFunc} />}
       </div>
-      <LabelContainer labelArray={labelArray}/>
+      <LabelContainer labelArray={labelArray} checked={checked}/>
     </div>
   );
 };
