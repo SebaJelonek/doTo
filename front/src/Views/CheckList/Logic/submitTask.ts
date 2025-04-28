@@ -24,7 +24,7 @@ export const submitTask: ISubmitFunction['submitFunction'] = (
   
   const newTask = { task, deadLine, owner, creator, priority};
 
-  const response = useFetch('POST', `${BACKEND_URL}/api/task/new`, newTask);
+  const response = useFetch('POST', `${BACKEND_URL}/api/tasks`, newTask);
   response?.then(({ status, _id, error }) => {
     if (status === 200) {
     } else {

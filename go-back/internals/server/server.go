@@ -22,8 +22,9 @@ func StartServer(dbConnection *sql.DB) {
 	}
 
 	http.HandleFunc("/", handlers.Root(dbConnection))
-	http.HandleFunc("/api/add-user", handlers.AddItem(dbConnection))
+	http.HandleFunc("/api/add-user", handlers.AddUser(dbConnection))
 	http.HandleFunc("/api/add-item", handlers.AddItem(dbConnection))
+	http.HandleFunc("/api/tasks", handlers.AddTask(dbConnection))
 
 	port := os.Getenv("PORT")
 	fmt.Printf("starting server at port: %v\n", port)
