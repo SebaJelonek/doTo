@@ -8,6 +8,7 @@ import { deleteTask } from './Logic/deleteTask';
 import deleteIcon from '../../assets/Icons/delete.png';
 import Form from '../../components/Form/InputField';
 import { MultInput } from './Layout/MultInput/MultInput';
+import { BACKEND_ATOM, UserAtom } from '../../Atoms';
 
 
 let taskArrayType: { id: number; task: string; isChecked: boolean; deadLine: number, owner: string, creator: string, priority: string }[];
@@ -18,6 +19,9 @@ const CheckList: React.FC = () => {
   const [width] = useAtom(widthAtom);
   const [height] = useAtom(heightAtom);
   const pageStyle = { minHeight: height - 56, minWidth: width };
+  const [BACKEND] = useAtom(BACKEND_ATOM);
+  const [user] = useAtom(UserAtom);
+  const creator = user.name
 
   useEffect(() => {
     setTaskArray(fetchedTasks);
@@ -25,7 +29,7 @@ const CheckList: React.FC = () => {
 
   const submitHandler = (taskName:string, owner:string, deadLine:number, priority: string) => {
     const createDate = Date.now();
-    submitTask(taskName, deadLine, owner, priority);
+    submitTask(taskName, deadLine, owner, priority, creator, BACKEND);
     setTaskArray((prevState) => [
       ...prevState,
       {
@@ -41,7 +45,7 @@ const CheckList: React.FC = () => {
   };
 
   const onDelete = (_id: number, createDate: number) => {
-    deleteTask(_id);
+    deleteTask(_id, BACKEND);
     setTaskArray(taskArray.filter(({ id }) => id !== _id));
   };
 

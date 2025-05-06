@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 
+
 interface Props {
   onSubmit: (
     taskName: string,
@@ -14,6 +15,7 @@ export const MultInput: React.FC<Props> = ({ onSubmit }) => {
   const [owner, setOwner] = useState("");
   const [deadLine, setDeadLine] = useState("");
   const [priority, setPriority] = useState("");
+  
 
   function onSubmitHandler(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();

@@ -1,17 +1,17 @@
-import { useAtom } from 'jotai';
-import { useFetch } from '../../../Fetch';
-import { BACKEND_ATOM, UserAtom } from '../../../Atoms';
 
-const [BACKEND_URL] = useAtom(BACKEND_ATOM);
-const [user] = useAtom(UserAtom);
-const creator = user.name
+import { useFetch } from '../../../Fetch';
+
+
+
 
 interface ISubmitFunction {
   submitFunction: (
     task: string,
     deadLine: number,
-    owner:string,
-    priority:string,
+    owner: string,
+    priority: string,
+    creator: string,
+    BACKEND: string
   ) => void;
 }
 
@@ -20,11 +20,13 @@ export const submitTask: ISubmitFunction['submitFunction'] = (
   deadLine,
   owner,
   priority,
+  creator,
+  BACKEND
 ) => {
   
   const newTask = { task, deadLine, owner, creator, priority};
 
-  const response = useFetch('POST', `${BACKEND_URL}/api/tasks`, newTask);
+  const response = useFetch('POST', `${BACKEND}/api/tasks`, newTask);
   response?.then(({ status, _id, error }) => {
     if (status === 200) {
     } else {
