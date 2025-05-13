@@ -1,33 +1,39 @@
-import React, { Fragment, useState } from 'react';
+import React, { useState } from 'react';
 import { CheckBox } from '../CheckBox/CheckBox';
 import { CheckListTask } from '../CheckListTask/CheckListTask';
 import { DeleteCheckListElement } from '../DeleteCheckListElement/DeleteCheckListElement';
 import {LabelContainer} from '../Lable/LabelContainer';
 
-const labelArray:[{type:"owner", text:string, id:number}, {type:"deadline",text:string,id:number}, {type:"priority",text:string,id:number}] = [{type:"owner",text:"Seba", id:1}, {type:"deadline",text:"2025-04-18T16:34",id:2}, {type:"priority",text:"Do",id:3}]
+
+  
 
 
 interface Props {
   id: number;
   task: string;
   isChecked: boolean;
-  deadLine: number;
-  onDelete: (id: number, deadLine: number) => void;
+  deadline: number;
+  owner: string;
+  priority:string;
+  onDelete: (id: number, deadline: number) => void;
 }
 
 export const CheckListElement: React.FC<Props> = ({
   id,
   task,
   isChecked,
-  deadLine,
+  owner,
+  priority,
+  deadline,
   onDelete,
 }) => {
   const [checked, setChecked] = useState(isChecked);
   const [trash, setTrash] = useState(false);
-  
+  const deadlineString = deadline.toString()
+  const labels = {owner, priority, deadline:deadlineString}  
 
   const deleteFunc = () => {
-    onDelete(id, deadLine);
+    onDelete(id, deadline);
   };
 
   const showDeleteButton = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -44,7 +50,7 @@ export const CheckListElement: React.FC<Props> = ({
         {!trash && <CheckBox onContextMenu={showDeleteButton} checked={checked} setChecked={setChecked} />}
         {trash && <DeleteCheckListElement deleteFunc={deleteFunc} />}
       </div>
-      <LabelContainer labelArray={labelArray} checked={checked}/>
+      <LabelContainer labels={labels} checked={checked}/>
     </div>
   );
 };

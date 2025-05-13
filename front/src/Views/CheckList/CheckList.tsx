@@ -6,12 +6,11 @@ import { useFetchTasks } from './Logic/useFetchTasks';
 import { submitTask } from './Logic/submitTask';
 import { deleteTask } from './Logic/deleteTask';
 import deleteIcon from '../../assets/Icons/delete.png';
-import Form from '../../components/Form/InputField';
 import { MultInput } from './Layout/MultInput/MultInput';
 import { BACKEND_ATOM, UserAtom } from '../../Atoms';
 
 
-let taskArrayType: { id: number; task: string; isChecked: boolean; deadLine: number, owner: string, creator: string, priority: string }[];
+let taskArrayType: { id: number; task: string; isChecked: boolean; deadline: number, owner: string, creator: string, priority: string }[];
 
 const CheckList: React.FC = () => {
   const fetchedTasks = useFetchTasks();
@@ -27,19 +26,19 @@ const CheckList: React.FC = () => {
     setTaskArray(fetchedTasks);
   }, [fetchedTasks]);
 
-  const submitHandler = (taskName:string, owner:string, deadLine:number, priority: string) => {
-    const createDate = Date.now();
-    submitTask(taskName, deadLine, owner, priority, creator, BACKEND);
+  const submitHandler = (taskName:string, owner:string, deadline:number, priority: string) => {
+    submitTask(taskName, deadline, owner, priority, creator, BACKEND);
+    console.log(`task: ${taskName}\ndeadline: ${deadline}\nowner: ${owner}\npriority: ${priority}\ncreator: ${creator}`)
     setTaskArray((prevState) => [
       ...prevState,
       {
         id: Math.random()*1000,
         task: taskName,
         isChecked: false,
-        deadLine: Date.now(),
-        owner: "Seba",
-        creator: "Ada",
-        priority: "high"
+        deadline,
+        owner,
+        creator,
+        priority
       },
     ]);
   };
@@ -60,7 +59,7 @@ const CheckList: React.FC = () => {
         <Fragment>
           <MultInput onSubmit={submitHandler}/>
           {/* <Form name='Enter task' type='text' onSubmitHandler={submitHandler} /> */}
-          {taskArray.map(({ id, task, isChecked, deadLine }) => {
+          {taskArray.map(({ id, task, isChecked, deadline, owner, priority }) => {
           
             return (
               <CheckListElement
@@ -68,7 +67,9 @@ const CheckList: React.FC = () => {
                 id={id}
                 task={task}
                 isChecked={isChecked}
-                deadLine={deadLine}
+                owner={owner}
+                priority={priority}
+                deadline={deadline}
                 onDelete={onDelete}
               />
             );

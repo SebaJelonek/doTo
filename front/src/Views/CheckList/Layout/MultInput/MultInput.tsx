@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 
 interface Props {
@@ -15,11 +15,19 @@ export const MultInput: React.FC<Props> = ({ onSubmit }) => {
   const [owner, setOwner] = useState("");
   const [deadLine, setDeadLine] = useState("");
   const [priority, setPriority] = useState("");
+  const [priorityMarkerString, setPriorityMarkerString] = useState("")
   
 
   function onSubmitHandler(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    onSubmit(taskName, owner, parseInt(deadLine), priority);
+    console.log(`${taskName}\n ${owner}\n unparsed: ${deadLine}\nparsed: ${Date.parse(deadLine)}\n ${priority}`);
+    console.log(Date.parse(deadLine));
+    
+    onSubmit(taskName, owner, Date.parse(deadLine), priorityMarkerString);
+    setTaskName("")
+    setOwner("")
+    setDeadLine("")
+    setPriority("")
   }
   function onNameChangeHandler(e: React.ChangeEvent<HTMLInputElement>) {
     setTaskName(e.currentTarget.value);
@@ -29,26 +37,33 @@ export const MultInput: React.FC<Props> = ({ onSubmit }) => {
   }
   function onDeadLineChangeHandler(e: React.ChangeEvent<HTMLInputElement>) {
     setDeadLine(e.currentTarget.value);
-
-    console.log(deadLine);
   }
 
   function onRangeChangeHandler(e: React.ChangeEvent<HTMLInputElement>) {
     setPriority(e.currentTarget.value);
-    console.log(priority);
   }
 
-  function priorityMarker(priorityString: string) {
-    const priority = parseInt(priorityString);
-
-    if (priority < 33) return "No";
-    else if (priority >= 33 && priority < 66) return "Maybe";
-    else return "Yes";
-  }
+  useEffect(()=>{
+    function priorityMarker(priorityString: string) {
+      const priority = parseInt(priorityString);
+      if (priority < 33) { 
+          setPriorityMarkerString("No")
+          return "No"
+        }
+      else if (priority >= 33 && priority < 66) {
+        setPriorityMarkerString("Maybe")
+        return "Maybe"
+      }
+      else {
+        setPriorityMarkerString("Yes")
+        return "Yes"
+      }
+    }
+    priorityMarker(priority)
+  }, [priority])
 
   function priorityMarkerColor(priorityString: string) {
     const priority = parseInt(priorityString);
-
     if (priority < 33) return "text-lime-600";
     else if (priority >= 33 && priority < 66) return "text-yellow-600";
     else return "text-rose-800";
@@ -140,8 +155,9 @@ export const MultInput: React.FC<Props> = ({ onSubmit }) => {
               priority
             )} mb-2 text-4xl font-semibold`}
           >
-            {priorityMarker(priority)}
+            {priorityMarkerString}
           </h2>
+          <button type="submit" className="text-slate-200 bg-slate-800 border-fuchsia-200 rounded p-1 mb-2 border">Add a Task</button>
         </div>
       </form>
     </div>
