@@ -20,10 +20,18 @@ export const MultInput: React.FC<Props> = ({ onSubmit }) => {
 
   function onSubmitHandler(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    console.log(`${taskName}\n ${owner}\n unparsed: ${deadLine}\nparsed: ${Date.parse(deadLine)}\n ${priority}`);
-    console.log(Date.parse(deadLine));
+    let priorityLevel
+    if (parseInt(priority) < 33) { 
+      priorityLevel = ("low")
+    }
+    else if (parseInt(priority) >= 33 && parseInt(priority) < 66) {
+    priorityLevel = ("mid")
+    }
+    else {
+    priorityLevel = ("high")
+    }
     
-    onSubmit(taskName, owner, Date.parse(deadLine), priorityMarkerString);
+    onSubmit(taskName, owner, Date.parse(deadLine), priorityLevel);
     setTaskName("")
     setOwner("")
     setDeadLine("")
