@@ -8,14 +8,16 @@ interface Props{
 }
 
 const defaultClass = `bg-orange-600 rounded-3xl text-xs px-1 font-mono mr-1`
+const checkedClass = `bg-orange-900 rounded-3xl text-xs px-1 font-mono mr-1`
 
 export const Label: React.FC<Props> = ({owner, deadline, priority, checked}) => {
-   const date = new Date(parseInt(deadline))
-
+    const date = new Date(parseInt(deadline))
+    const clearDate = date.toISOString().replace("T", " ").replace("Z", "").replaceAll("-", ".").slice(0, -7)
+    
 return  <>
-         <div style={{fontFamily: "Itim"}} className={checked?`bg-orange-900 rounded-3xl text-xs px-1 font-mono mr-1`:defaultClass}>{owner}</div> 
-         <div style={{fontFamily: "Itim"}} className={checked?`bg-orange-900 rounded-3xl text-xs px-1 font-mono mr-1`:defaultClass}>{priority}</div>
-         <div style={{fontFamily: "Itim"}} className={checked?`bg-orange-900 rounded-3xl text-xs px-1 font-mono mr-1`:defaultClass}>{date.toISOString()}</div>
- </>
+         <div style={{fontFamily: "Itim"}} className={checked ? checkedClass : defaultClass}>{owner}</div> 
+         <div style={{fontFamily: "Itim"}} className={checked ? checkedClass : defaultClass}>{priority}</div>
+         <div style={{fontFamily: "Itim"}} className={checked ? checkedClass : defaultClass}>{clearDate}</div>
+        </>
  
 };

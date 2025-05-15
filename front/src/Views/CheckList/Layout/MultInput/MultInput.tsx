@@ -14,7 +14,7 @@ export const MultInput: React.FC<Props> = ({ onSubmit }) => {
   const [taskName, setTaskName] = useState("");
   const [owner, setOwner] = useState("");
   const [deadLine, setDeadLine] = useState("");
-  const [priority, setPriority] = useState("");
+  const [priority, setPriority] = useState("50");
   const [priorityMarkerString, setPriorityMarkerString] = useState("")
   
 
@@ -37,6 +37,7 @@ export const MultInput: React.FC<Props> = ({ onSubmit }) => {
     setDeadLine("")
     setPriority("")
   }
+
   function onNameChangeHandler(e: React.ChangeEvent<HTMLInputElement>) {
     setTaskName(e.currentTarget.value);
   }
@@ -83,6 +84,7 @@ export const MultInput: React.FC<Props> = ({ onSubmit }) => {
       <form onSubmit={onSubmitHandler}>
         <div className="mb-3 flex flex-col-reverse rounded-xl border-t-2 bg-zinc-900">
           <input
+            value={taskName}
             className="mb-2 w-4/5 self-center text-center"
             type="text"
             name="taskName"
@@ -103,6 +105,7 @@ export const MultInput: React.FC<Props> = ({ onSubmit }) => {
           } mb-3 flex-col-reverse rounded-xl border-t-2 bg-zinc-900`}
         >
           <input
+            value={owner}
             className="mb-2 w-4/5 self-center text-center"
             type="text"
             name="owner"
@@ -123,6 +126,7 @@ export const MultInput: React.FC<Props> = ({ onSubmit }) => {
           } mb-3 flex-col-reverse rounded-xl border-t-2 bg-zinc-900`}
         >
           <input
+            value={deadLine}
             className="mb-2 h-10 w-4/5 self-center"
             type="datetime-local"
             name="deadline"
@@ -144,6 +148,7 @@ export const MultInput: React.FC<Props> = ({ onSubmit }) => {
             } mb-1 flex-col-reverse rounded-xl border-t-2 bg-zinc-900`}
           >
             <input
+              value={priority}
               className="w-11/12 self-center"
               type="range"
               name="priority"
