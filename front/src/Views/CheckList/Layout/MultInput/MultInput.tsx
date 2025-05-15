@@ -16,6 +16,10 @@ export const MultInput: React.FC<Props> = ({ onSubmit }) => {
   const [deadLine, setDeadLine] = useState("");
   const [priority, setPriority] = useState("50");
   const [priorityMarkerString, setPriorityMarkerString] = useState("")
+  const [taskNameEnterPressed, setTaskNameEnterPressed] = useState(false)
+  const [ownerEnterPressed, setOwnerEnterPressed] = useState(false)
+  const [deadlineEnterPressed, setDeadlineEnterPressed] = useState(false)
+  const [priorityIsChanged, setPriorityIsChanged] = useState(false)
   
 
   function onSubmitHandler(e: React.FormEvent<HTMLFormElement>) {
@@ -25,10 +29,10 @@ export const MultInput: React.FC<Props> = ({ onSubmit }) => {
       priorityLevel = ("low")
     }
     else if (parseInt(priority) >= 33 && parseInt(priority) < 66) {
-    priorityLevel = ("mid")
+      priorityLevel = ("mid")
     }
     else {
-    priorityLevel = ("high")
+      priorityLevel = ("high")
     }
     
     onSubmit(taskName, owner, Date.parse(deadLine), priorityLevel);
@@ -36,9 +40,32 @@ export const MultInput: React.FC<Props> = ({ onSubmit }) => {
     setOwner("")
     setDeadLine("")
     setPriority("")
+    setPriorityIsChanged(false)
   }
 
+  function onEnterDownTask(e:React.KeyboardEvent<HTMLInputElement>) 
+    {
+      if (e.code === "Enter" || e.code === "Tab")
+        {
+          e.preventDefault()
+          setTaskNameEnterPressed(true)}
+    }
+  function onEnterDownOwner(e:React.KeyboardEvent<HTMLInputElement>) 
+    {
+      if (e.code === "Enter" || e.code === "Tab")
+        {
+          e.preventDefault()
+          setOwnerEnterPressed(true)
+        }
+    }
+  function onEnterDownDeadline(e:React.KeyboardEvent<HTMLInputElement>) 
+  {if (e.code === "Enter" || e.code === "Tab"){
+        e.preventDefault()
+        setDeadlineEnterPressed(true)}}
+  
+
   function onNameChangeHandler(e: React.ChangeEvent<HTMLInputElement>) {
+    e.preventDefault()
     setTaskName(e.currentTarget.value);
   }
   function onOwnerChangeHandler(e: React.ChangeEvent<HTMLInputElement>) {
@@ -82,7 +109,7 @@ export const MultInput: React.FC<Props> = ({ onSubmit }) => {
     <div>
       {/* onSubmit(taskName, owner, parseInt(deadLine), priority) */}
       <form onSubmit={onSubmitHandler}>
-        <div className="mb-3 flex flex-col-reverse rounded-xl border-t-2 bg-zinc-900">
+        <div className={`${taskNameEnterPressed === false ? "flex" : "hidden"} mb-3 flex-col-reverse rounded-xl border-t-2 bg-zinc-900`}>
           <input
             value={taskName}
             className="mb-2 w-4/5 self-center text-center"
@@ -91,6 +118,7 @@ export const MultInput: React.FC<Props> = ({ onSubmit }) => {
             id="taskName"
             title="taskName"
             onChange={onNameChangeHandler}
+            onKeyDown={onEnterDownTask}
           />
           <label
             className="mb-2 text-xl font-semibold text-slate-300"
@@ -101,7 +129,7 @@ export const MultInput: React.FC<Props> = ({ onSubmit }) => {
         </div>
         <div
           className={`${
-            taskName !== "" ? "flex" : "hidden"
+            taskNameEnterPressed === true && ownerEnterPressed === false ? "flex" : "hidden"
           } mb-3 flex-col-reverse rounded-xl border-t-2 bg-zinc-900`}
         >
           <input
@@ -112,6 +140,7 @@ export const MultInput: React.FC<Props> = ({ onSubmit }) => {
             id="owner"
             title="owner"
             onChange={onOwnerChangeHandler}
+            onKeyDown={onEnterDownOwner}
           />
           <label
             className="mb-2 text-xl font-semibold text-slate-300"
@@ -122,7 +151,7 @@ export const MultInput: React.FC<Props> = ({ onSubmit }) => {
         </div>
         <div
           className={`${
-            owner !== "" ? "flex" : "hidden"
+            ownerEnterPressed === true && deadlineEnterPressed === false ? "flex" : "hidden"
           } mb-3 flex-col-reverse rounded-xl border-t-2 bg-zinc-900`}
         >
           <input
@@ -133,6 +162,7 @@ export const MultInput: React.FC<Props> = ({ onSubmit }) => {
             id="deadline"
             title="deadline"
             onChange={onDeadLineChangeHandler}
+            onKeyDown={onEnterDownDeadline}
           />
           <label
             className="mb-2 text-xl font-semibold text-slate-300"
@@ -141,11 +171,10 @@ export const MultInput: React.FC<Props> = ({ onSubmit }) => {
             Set deadline here
           </label>
         </div>
-        <div className={`${deadLine !== "" ? "" : "hidden"}`}>
+        <div className={`${deadlineEnterPressed === true ? "" : "hidden"}`}>
           <div
-            className={`${
-              deadLine !== "" ? "flex" : "hidden"
-            } mb-1 flex-col-reverse rounded-xl border-t-2 bg-zinc-900`}
+            className={`${deadlineEnterPressed === true ? "flex" : "hidden"}
+            mb-1 flex-col-reverse rounded-xl border-t-2 bg-zinc-900`}
           >
             <input
               value={priority}
@@ -170,7 +199,7 @@ export const MultInput: React.FC<Props> = ({ onSubmit }) => {
           >
             {priorityMarkerString}
           </h2>
-          <button type="submit" className="text-slate-200 bg-slate-800 border-fuchsia-200 rounded p-1 mb-2 border">Add a Task</button>
+          <button className={`${priorityIsChanged === true ? "block" : "hidden"}text-slate-200 bg-slate-800 border-fuchsia-200 rounded p-1 mb-2 border`}>Add a Task</button>
         </div>
       </form>
     </div>
