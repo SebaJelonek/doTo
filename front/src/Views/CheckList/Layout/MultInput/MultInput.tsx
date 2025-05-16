@@ -9,7 +9,7 @@ interface Props {
     priority: string
   ) => void;
 }
-
+const validKeys = ["Enter", "Tab", "Done", "Go", "Next"];
 export const MultInput: React.FC<Props> = ({ onSubmit }) => {
   const [taskName, setTaskName] = useState("");
   const [owner, setOwner] = useState("");
@@ -45,7 +45,7 @@ export const MultInput: React.FC<Props> = ({ onSubmit }) => {
 
   function onEnterDownTask(e:React.KeyboardEvent<HTMLInputElement>) 
     {
-      if (e.code === "Enter" || e.code === "Tab")
+      if (validKeys.includes(e.key))
         {
           e.preventDefault()
           setTaskNameEnterPressed(true)}
