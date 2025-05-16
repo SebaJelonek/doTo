@@ -52,14 +52,14 @@ export const MultInput: React.FC<Props> = ({ onSubmit }) => {
     }
   function onEnterDownOwner(e:React.KeyboardEvent<HTMLInputElement>) 
     {
-      if (e.code === "Enter" || e.code === "Tab")
+      if (validKeys.includes(e.key))
         {
           e.preventDefault()
           setOwnerEnterPressed(true)
         }
     }
   function onEnterDownDeadline(e:React.KeyboardEvent<HTMLInputElement>) 
-  {if (e.code === "Enter" || e.code === "Tab"){
+  {if (validKeys.includes(e.key)){
         e.preventDefault()
         setDeadlineEnterPressed(true)}}
   
