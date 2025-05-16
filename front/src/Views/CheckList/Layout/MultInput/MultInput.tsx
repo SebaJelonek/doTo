@@ -40,7 +40,7 @@ export const MultInput: React.FC<Props> = ({ onSubmit }) => {
     setOwner("")
     setDeadLine("")
     setPriority("")
-    setPriorityIsChanged(false)
+    // setPriorityIsChanged(false)
   }
 
   function onEnterDownTask(e:React.KeyboardEvent<HTMLInputElement>) 
@@ -77,6 +77,7 @@ export const MultInput: React.FC<Props> = ({ onSubmit }) => {
 
   function onRangeChangeHandler(e: React.ChangeEvent<HTMLInputElement>) {
     setPriority(e.currentTarget.value);
+    setPriorityIsChanged(true)
   }
 
   useEffect(()=>{
@@ -199,7 +200,7 @@ export const MultInput: React.FC<Props> = ({ onSubmit }) => {
           >
             {priorityMarkerString}
           </h2>
-          <button className={`${priorityIsChanged === true ? "block" : "hidden"}text-slate-200 bg-slate-800 border-fuchsia-200 rounded p-1 mb-2 border`}>Add a Task</button>
+          <button className={`${priorityIsChanged === true ? "inline-block" : "hidden"} text-slate-200 bg-slate-800 border-fuchsia-200 rounded p-1 mb-2 border`}>Add a Task</button>
         </div>
       </form>
     </div>
