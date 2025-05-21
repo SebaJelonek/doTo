@@ -25,7 +25,7 @@ export const MultInput: React.FC<Props> = ({ onSubmit }) => {
   
   useEffect(() => {
     if (taskNameEnterPressed && ownerRef.current) ownerRef.current.focus();
-    if (ownerEnterPressed && deadlineRef.current) deadlineRef.current.focus();
+    // if (ownerEnterPressed && deadlineRef.current) deadlineRef.current.focus();
 
   }, [taskNameEnterPressed, ownerEnterPressed]);
   
