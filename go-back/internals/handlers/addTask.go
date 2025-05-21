@@ -30,7 +30,9 @@ type NewTask struct {
 
 func AddTask(dbConnection *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		method := r.Method
+		var method string = r.Method
+
+		// method := r.Method
 		if method == "POST" {
 
 			var task NewTask

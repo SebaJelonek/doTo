@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 
 interface Props {
@@ -15,13 +15,21 @@ export const MultInput: React.FC<Props> = ({ onSubmit }) => {
   const [owner, setOwner] = useState("");
   const [deadLine, setDeadLine] = useState("");
   const [priority, setPriority] = useState("50");
+  const ownerRef = useRef<HTMLInputElement>(null)
+  const deadlineRef = useRef<HTMLInputElement>(null)
   const [priorityMarkerString, setPriorityMarkerString] = useState("")
   const [taskNameEnterPressed, setTaskNameEnterPressed] = useState(false)
   const [ownerEnterPressed, setOwnerEnterPressed] = useState(false)
-  const [deadlineEnterPressed, setDeadlineEnterPressed] = useState(false)
+  const [deadlineIsChanged, setDeadlineIsChanged] = useState(false)
   const [priorityIsChanged, setPriorityIsChanged] = useState(false)
   
+  useEffect(() => {
+    if (taskNameEnterPressed && ownerRef.current) ownerRef.current.focus();
+    if (ownerEnterPressed && deadlineRef.current) deadlineRef.current.focus();
 
+  }, [taskNameEnterPressed, ownerEnterPressed]);
+  
+  
   function onSubmitHandler(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     let priorityLevel
@@ -40,15 +48,19 @@ export const MultInput: React.FC<Props> = ({ onSubmit }) => {
     setOwner("")
     setDeadLine("")
     setPriority("")
-    // setPriorityIsChanged(false)
+    setTaskNameEnterPressed(false)
+    setOwnerEnterPressed(false)
+    setDeadlineIsChanged(false)
+    setPriorityIsChanged(false)
   }
 
   function onEnterDownTask(e:React.KeyboardEvent<HTMLInputElement>) 
-    {
+    { 
       if (validKeys.includes(e.key))
         {
           e.preventDefault()
-          setTaskNameEnterPressed(true)}
+          setTaskNameEnterPressed(true)
+        }
     }
   function onEnterDownOwner(e:React.KeyboardEvent<HTMLInputElement>) 
     {
@@ -58,10 +70,6 @@ export const MultInput: React.FC<Props> = ({ onSubmit }) => {
           setOwnerEnterPressed(true)
         }
     }
-  function onEnterDownDeadline(e:React.KeyboardEvent<HTMLInputElement>) 
-  {if (validKeys.includes(e.key)){
-        e.preventDefault()
-        setDeadlineEnterPressed(true)}}
   
 
   function onNameChangeHandler(e: React.ChangeEvent<HTMLInputElement>) {
@@ -73,6 +81,7 @@ export const MultInput: React.FC<Props> = ({ onSubmit }) => {
   }
   function onDeadLineChangeHandler(e: React.ChangeEvent<HTMLInputElement>) {
     setDeadLine(e.currentTarget.value);
+    setDeadlineIsChanged(true)
   }
 
   function onRangeChangeHandler(e: React.ChangeEvent<HTMLInputElement>) {
@@ -134,6 +143,7 @@ export const MultInput: React.FC<Props> = ({ onSubmit }) => {
           } mb-3 flex-col-reverse rounded-xl border-t-2 bg-zinc-900`}
         >
           <input
+            ref={ownerRef}                   
             value={owner}
             className="mb-2 w-4/5 self-center text-center"
             type="text"
@@ -152,10 +162,11 @@ export const MultInput: React.FC<Props> = ({ onSubmit }) => {
         </div>
         <div
           className={`${
-            ownerEnterPressed === true && deadlineEnterPressed === false ? "flex" : "hidden"
+            ownerEnterPressed === true && deadlineIsChanged === false ? "flex" : "hidden"
           } mb-3 flex-col-reverse rounded-xl border-t-2 bg-zinc-900`}
-        >
+        >          
           <input
+            ref={deadlineRef}
             value={deadLine}
             className="mb-2 h-10 w-4/5 self-center"
             type="datetime-local"
@@ -163,7 +174,6 @@ export const MultInput: React.FC<Props> = ({ onSubmit }) => {
             id="deadline"
             title="deadline"
             onChange={onDeadLineChangeHandler}
-            onKeyDown={onEnterDownDeadline}
           />
           <label
             className="mb-2 text-xl font-semibold text-slate-300"
@@ -172,12 +182,12 @@ export const MultInput: React.FC<Props> = ({ onSubmit }) => {
             Set deadline here
           </label>
         </div>
-        <div className={`${deadlineEnterPressed === true ? "" : "hidden"}`}>
+        <div className={`${deadlineIsChanged === true ? "" : "hidden"}`}>
           <div
-            className={`${deadlineEnterPressed === true ? "flex" : "hidden"}
+            className={`${deadlineIsChanged === true ? "flex" : "hidden"}
             mb-1 flex-col-reverse rounded-xl border-t-2 bg-zinc-900`}
           >
-            <input
+            <input            
               value={priority}
               className="w-11/12 self-center"
               type="range"
