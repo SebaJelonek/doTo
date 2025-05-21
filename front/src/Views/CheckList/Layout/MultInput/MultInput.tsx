@@ -29,6 +29,20 @@ export const MultInput: React.FC<Props> = ({ onSubmit }) => {
 
   }, [taskNameEnterPressed, ownerEnterPressed]);
   
+  useEffect(() => {
+    if (ownerEnterPressed && deadlineRef.current) {
+      // Blur previous input to dismiss virtual keyboard
+      if (ownerRef.current) {
+        ownerRef.current.blur();
+      }
+      // Delay focus to ensure input is rendered and picker opens
+      setTimeout(() => {
+        if (deadlineRef.current) {
+          deadlineRef.current.focus();
+        }
+      }, 100); // Small delay for mobile compatibility
+    }
+  }, [ownerEnterPressed]);
   
   function onSubmitHandler(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
