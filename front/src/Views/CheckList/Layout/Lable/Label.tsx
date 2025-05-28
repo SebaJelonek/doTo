@@ -17,13 +17,13 @@ export const Label: React.FC<Props> = ({
   checked,
 }) => {
   const color = checked ? checkedClass : defaultClass;
+
   const date = new Date(parseInt(deadline));
   const clearDate = date
-    .toISOString()
-    .replace("T", " ")
-    .replace("Z", "")
-    .replaceAll("-", ".")
-    .slice(0, -7);
+    .toLocaleString()
+    .replace(",", "")
+    .replaceAll("/", ".")
+    .slice(0, -3);
 
   return (
     <>

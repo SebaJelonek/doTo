@@ -9,12 +9,12 @@ interface IDeleteTask {
   ) => void;
 }
 
-export const deleteTask: IDeleteTask['deleteTask'] = (
+export const  deleteTask: IDeleteTask['deleteTask'] = (
   id,
   BACKEND
   ) => {
   console.log('task ' + id + ' has been deleted');
-  const response = useFetch('POST', `${BACKEND}/api/task/delete`, {
+  const response = useFetch('POST', `${BACKEND}/api/delete-task`, {
     id,
   });
 

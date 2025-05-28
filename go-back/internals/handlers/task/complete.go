@@ -47,7 +47,7 @@ func CompleteTask(dbConnection *sql.DB) http.HandlerFunc {
 		} else {
 			result, err := dbConnection.Exec(
 				"UPDATE tasks SET is_done = $2, completion_time = $3 WHERE id = ($1)",
-				task.ID, task.IsDone, nil)
+				task.ID, task.IsDone, 0)
 			if err != nil {
 				http.Error(w, "db error", 500)
 				log.Println("error: ", err)

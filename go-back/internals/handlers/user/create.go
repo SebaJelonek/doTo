@@ -1,4 +1,4 @@
-package handlers
+package users
 
 import (
 	"database/sql"
@@ -7,14 +7,17 @@ import (
 	"net/http"
 )
 
-type User struct {
-	Name string `json:"name"`
+type UserCreate struct {
+	Name          string `json:"name"`
+	Email         string `json:"email"`
+	Password      string `json:"password"`
+	PasswordCheck string `json:"passwordCheck"`
 }
 
 func AddUser(dbConnection *sql.DB) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		var user User
+		var user UserCreate
 
 		err := json.NewDecoder(r.Body).Decode(&user)
 		if err != nil {
@@ -23,6 +26,12 @@ func AddUser(dbConnection *sql.DB) http.HandlerFunc {
 			return
 		}
 		defer r.Body.Close()
+
+		if user.Password != user.PasswordCheck {
+			http.Error(w, "Passwords do not match", 401)
+			return
+		}
+
 		log.Println("we did decode name: ", user.Name)
 		result, err := dbConnection.Exec("INSERT INTO Users (Name) VALUES ($1)", user.Name)
 		if err != nil {
