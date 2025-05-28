@@ -20,7 +20,22 @@ func GetTask(dbConnection *sql.DB) http.HandlerFunc {
 		*/
 
 		authToken = "1"
-		rows, err := dbConnection.Query("SELECT * FROM tasks WHERE creator = $1 AND owner = $1", authToken)
+		rows, err := dbConnection.Query(`SELECT 
+		t.id,
+		t.name,
+		t.is_done,
+		t.is_deleted,
+		t.start_time,
+		t.completion_time,
+		t.dead_line,
+		t.priority,
+		uc.name AS creator_name,
+		uo.name AS owner_name
+	  FROM tasks t
+	  INNER JOIN users uc ON t.creator = uc.id
+	  INNER JOIN users uo ON t.owner = uo.id
+	  WHERE t.creator = $1 AND t.owner = $1;
+	  `, authToken)
 		if err != nil {
 			http.Error(w, "Query failed", 500)
 			log.Println("query error ", err)
@@ -41,15 +56,15 @@ func GetTask(dbConnection *sql.DB) http.HandlerFunc {
 			*/
 			err := rows.Scan(
 				&task.Id,
-				&task.Creator,
-				&task.Owner,
+				&task.Name,
 				&task.IsDone,
 				&task.IsDeleted,
 				&task.StartTime,
 				&task.CompletionTime,
-				&task.Name,
 				&task.DeadLine,
 				&task.Priority,
+				&task.Creator,
+				&task.Owner,
 			)
 			if err != nil {
 				log.Println("scan error ", err)

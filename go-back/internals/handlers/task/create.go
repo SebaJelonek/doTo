@@ -11,12 +11,12 @@ import (
 
 type Task struct {
 	Id             int    `json:"id"`
-	Creator        int    `json:"creator"`
-	Owner          int    `json:"owner"`
+	Creator        string `json:"creator"`
+	Owner          string `json:"owner"`
 	DeadLine       int    `json:"deadline"`
 	StartTime      int    `json:"startTime"`
 	CompletionTime int    `json:"completionTime"`
-	IsDone         bool   `json:"isDone"`
+	IsDone         bool   `json:"isChecked"`
 	IsDeleted      bool   `json:"isDeleted"`
 	Name           string `json:"task"`
 	Priority       string `json:"priority"`

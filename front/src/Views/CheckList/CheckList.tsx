@@ -95,6 +95,7 @@ const CheckList: React.FC = () => {
                   priority={priority}
                   deadline={deadline}
                   onDelete={onDelete}
+                  BACKEND={BACKEND}
                 />
               );
             }

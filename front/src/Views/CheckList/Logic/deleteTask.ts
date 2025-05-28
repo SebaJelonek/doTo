@@ -4,18 +4,18 @@ import { useFetch } from '../../../Fetch';
 
 interface IDeleteTask {
   deleteTask: (
-    _id: number,
+    id: number,
     BACKEND: string
   ) => void;
 }
 
 export const deleteTask: IDeleteTask['deleteTask'] = (
-  _id,
+  id,
   BACKEND
   ) => {
-  console.log('task ' + _id + ' has been deleted');
+  console.log('task ' + id + ' has been deleted');
   const response = useFetch('POST', `${BACKEND}/api/task/delete`, {
-    _id,
+    id,
   });
 
   response?.then((res) => {

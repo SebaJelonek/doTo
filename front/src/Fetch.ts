@@ -1,14 +1,15 @@
 export const useFetch = (
-  method: 'GET' | 'POST',
+  method: 'GET' | 'POST' | "PUT",
   url: string,
   body?:
-    | {_id: number}
+    | {id: number}
     | { item: string }
-    | { _id: number; itemId: string }
+    | { id: number; itemId: string }
     | { item: string;  }
     | { task:string, deadLine:number, owner:string, creatorID:number, priority:string}//incoming task
     | { task:string, deadLine:number, owner:string, creatorID:number, priority:string}//outgoing task
-    | { _id: number; deadLine: number; }
+    | { id: number; deadLine: number; }
+    | {id: number; checked: boolean}
 ) => {
   if (method === 'GET') {
     const fetchData = async () => {
@@ -23,6 +24,7 @@ export const useFetch = (
     };
     return fetchData();
   } else if (body !== undefined) {
+    
     const postData = async () => {
       const response = await fetch(url, {
         method,

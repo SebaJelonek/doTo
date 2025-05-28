@@ -9,9 +9,8 @@ import (
 )
 
 type DoneTask struct {
-	ID             int       `json:"id"`
-	IsDone         bool      `json:"isDone"`
-	CompletionTime time.Time `json:"CompletionTime"`
+	ID     int  `json:"id"`
+	IsDone bool `json:"checked"`
 }
 
 func CompleteTask(dbConnection *sql.DB) http.HandlerFunc {
@@ -25,13 +24,13 @@ func CompleteTask(dbConnection *sql.DB) http.HandlerFunc {
 			return
 		}
 		defer r.Body.Close()
-
+		log.Println(task)
 		if task.IsDone {
-			task.CompletionTime = time.Now()
+			completionTime := time.Now().UnixMilli()
 
 			result, err := dbConnection.Exec(
 				"UPDATE tasks SET is_done = $2, completion_time = $3 WHERE id = ($1)",
-				task.ID, task.IsDone, task.CompletionTime)
+				task.ID, task.IsDone, completionTime)
 
 			if err != nil {
 				http.Error(w, "db error", 500)
@@ -40,7 +39,7 @@ func CompleteTask(dbConnection *sql.DB) http.HandlerFunc {
 			}
 			log.Println(result)
 
-			w.WriteHeader(202)
+			w.WriteHeader(200)
 			json.NewEncoder(w).Encode(map[string]string{
 				"message": "Task has been marked complete",
 			})
