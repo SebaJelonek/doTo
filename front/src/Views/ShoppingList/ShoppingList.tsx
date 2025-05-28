@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
-import { useAtom } from 'jotai';
-import InputField from '../../components/Form/InputField';
-import ShoppingListContainer from './Layout/ShoppingListContainer/ShoppingListContainer';
+import React, { useEffect } from "react";
+import { useAtom } from "jotai";
+import InputField from "../../components/Form/InputField";
+import ShoppingListContainer from "./Layout/ShoppingListContainer/ShoppingListContainer";
 import {
   BACKEND_ATOM,
   heightAtom,
@@ -9,9 +9,9 @@ import {
   SheetIDAtom,
   shoppingListAtom,
   widthAtom,
-} from '../../Atoms';
-import { useFetchShoppingList } from './Logic/useFetchShoppingList';
-import { submitItem } from './Logic/submitShoppingItem';
+} from "../../Atoms";
+import { useFetchShoppingList } from "./Logic/useFetchShoppingList";
+import { submitItem } from "./Logic/submitShoppingItem";
 
 const ShoppingList: React.FC = () => {
   const [BACKEND] = useAtom(BACKEND_ATOM);
@@ -21,34 +21,34 @@ const ShoppingList: React.FC = () => {
   const [width] = useAtom(widthAtom);
   const [height] = useAtom(heightAtom);
 
-  useFetchShoppingList();
+  // useFetchShoppingList();
 
   const onSubmitHandler = (inputValue: string) =>
     submitItem(inputValue, sheetId, BACKEND, setShoppingList);
 
   return (
     <div
-      className='p-8 pt-7 pb-0'
+      className="p-8 pt-7 pb-0"
       style={{ minHeight: height - 60, minWidth: width }}
     >
       {!sheetEmpty ? (
         <div key={sheetId}>
           <InputField
-            name='Item name'
-            type='text'
+            name="Item name"
+            type="text"
             onSubmitHandler={onSubmitHandler}
           />
           <ShoppingListContainer list={shoppingList} />
         </div>
       ) : (
         <div>
-          <h2 className='mb-4 text-4xl text-amber-300'>
+          <h2 className="mb-4 text-4xl text-amber-300">
             Shopping list is empty
           </h2>
-          <h2 className='mb-8 text-3xl text-amber-300'>Add new item below</h2>
+          <h2 className="mb-8 text-3xl text-amber-300">Add new item below</h2>
           <InputField
-            name='Item name'
-            type='text'
+            name="Item name"
+            type="text"
             onSubmitHandler={onSubmitHandler}
           />
         </div>

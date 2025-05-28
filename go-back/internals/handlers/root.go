@@ -13,7 +13,7 @@ type DBUser struct {
 }
 
 func Root(dbConnection *sql.DB) http.HandlerFunc {
-	rows, err := dbConnection.Query("SELECT * FROM USERS")
+	rows, err := dbConnection.Query("SELECT id, name FROM USERS")
 	if err != nil {
 		log.Fatal("error: ", err)
 	}

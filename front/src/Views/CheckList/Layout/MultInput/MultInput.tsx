@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
 
-
 interface Props {
   onSubmit: (
     taskName: string,
@@ -15,20 +14,19 @@ export const MultInput: React.FC<Props> = ({ onSubmit }) => {
   const [owner, setOwner] = useState("");
   const [deadLine, setDeadLine] = useState("");
   const [priority, setPriority] = useState("50");
-  const ownerRef = useRef<HTMLInputElement>(null)
-  const deadlineRef = useRef<HTMLInputElement>(null)
-  const [priorityMarkerString, setPriorityMarkerString] = useState("")
-  const [taskNameEnterPressed, setTaskNameEnterPressed] = useState(false)
-  const [ownerEnterPressed, setOwnerEnterPressed] = useState(false)
-  const [deadlineIsChanged, setDeadlineIsChanged] = useState(false)
-  const [priorityIsChanged, setPriorityIsChanged] = useState(false)
-  
+  const ownerRef = useRef<HTMLInputElement>(null);
+  const deadlineRef = useRef<HTMLInputElement>(null);
+  const [priorityMarkerString, setPriorityMarkerString] = useState("");
+  const [taskNameEnterPressed, setTaskNameEnterPressed] = useState(false);
+  const [ownerEnterPressed, setOwnerEnterPressed] = useState(false);
+  const [deadlineIsChanged, setDeadlineIsChanged] = useState(false);
+  const [priorityIsChanged, setPriorityIsChanged] = useState(false);
+
   useEffect(() => {
     if (taskNameEnterPressed && ownerRef.current) ownerRef.current.focus();
     // if (ownerEnterPressed && deadlineRef.current) deadlineRef.current.focus();
-
   }, [taskNameEnterPressed, ownerEnterPressed]);
-  
+
   useEffect(() => {
     if (ownerEnterPressed && deadlineRef.current) {
       // Blur previous input to dismiss virtual keyboard
@@ -43,51 +41,44 @@ export const MultInput: React.FC<Props> = ({ onSubmit }) => {
       }, 100); // Small delay for mobile compatibility
     }
   }, [ownerEnterPressed]);
-  
+
   function onSubmitHandler(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    let priorityLevel
-    if (parseInt(priority) < 33) { 
-      priorityLevel = ("low")
+    let priorityLevel;
+    if (parseInt(priority) < 33) {
+      priorityLevel = "low";
+    } else if (parseInt(priority) >= 33 && parseInt(priority) < 66) {
+      priorityLevel = "mid";
+    } else {
+      priorityLevel = "high";
     }
-    else if (parseInt(priority) >= 33 && parseInt(priority) < 66) {
-      priorityLevel = ("mid")
-    }
-    else {
-      priorityLevel = ("high")
-    }
-    
+
     onSubmit(taskName, owner, Date.parse(deadLine), priorityLevel);
-    setTaskName("")
-    setOwner("")
-    setDeadLine("")
-    setPriority("")
-    setTaskNameEnterPressed(false)
-    setOwnerEnterPressed(false)
-    setDeadlineIsChanged(false)
-    setPriorityIsChanged(false)
+    setTaskName("");
+    setOwner("");
+    setDeadLine("");
+    setPriority("");
+    setTaskNameEnterPressed(false);
+    setOwnerEnterPressed(false);
+    setDeadlineIsChanged(false);
+    setPriorityIsChanged(false);
   }
 
-  function onEnterDownTask(e:React.KeyboardEvent<HTMLInputElement>) 
-    { 
-      if (validKeys.includes(e.key))
-        {
-          e.preventDefault()
-          setTaskNameEnterPressed(true)
-        }
+  function onEnterDownTask(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (validKeys.includes(e.key)) {
+      e.preventDefault();
+      setTaskNameEnterPressed(true);
     }
-  function onEnterDownOwner(e:React.KeyboardEvent<HTMLInputElement>) 
-    {
-      if (validKeys.includes(e.key))
-        {
-          e.preventDefault()
-          setOwnerEnterPressed(true)
-        }
+  }
+  function onEnterDownOwner(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (validKeys.includes(e.key)) {
+      e.preventDefault();
+      setOwnerEnterPressed(true);
     }
-  
+  }
 
   function onNameChangeHandler(e: React.ChangeEvent<HTMLInputElement>) {
-    e.preventDefault()
+    e.preventDefault();
     setTaskName(e.currentTarget.value);
   }
   function onOwnerChangeHandler(e: React.ChangeEvent<HTMLInputElement>) {
@@ -95,32 +86,30 @@ export const MultInput: React.FC<Props> = ({ onSubmit }) => {
   }
   function onDeadLineChangeHandler(e: React.ChangeEvent<HTMLInputElement>) {
     setDeadLine(e.currentTarget.value);
-    setDeadlineIsChanged(true)
+    setDeadlineIsChanged(true);
   }
 
   function onRangeChangeHandler(e: React.ChangeEvent<HTMLInputElement>) {
     setPriority(e.currentTarget.value);
-    setPriorityIsChanged(true)
+    setPriorityIsChanged(true);
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     function priorityMarker(priorityString: string) {
       const priority = parseInt(priorityString);
-      if (priority < 33) { 
-          setPriorityMarkerString("No")
-          return "No"
-        }
-      else if (priority >= 33 && priority < 66) {
-        setPriorityMarkerString("Maybe")
-        return "Maybe"
-      }
-      else {
-        setPriorityMarkerString("Yes")
-        return "Yes"
+      if (priority < 33) {
+        setPriorityMarkerString("No");
+        return "No";
+      } else if (priority >= 33 && priority < 66) {
+        setPriorityMarkerString("Maybe");
+        return "Maybe";
+      } else {
+        setPriorityMarkerString("Yes");
+        return "Yes";
       }
     }
-    priorityMarker(priority)
-  }, [priority])
+    priorityMarker(priority);
+  }, [priority]);
 
   function priorityMarkerColor(priorityString: string) {
     const priority = parseInt(priorityString);
@@ -133,7 +122,11 @@ export const MultInput: React.FC<Props> = ({ onSubmit }) => {
     <div>
       {/* onSubmit(taskName, owner, parseInt(deadLine), priority) */}
       <form onSubmit={onSubmitHandler}>
-        <div className={`${taskNameEnterPressed === false ? "flex" : "hidden"} mb-3 flex-col-reverse rounded-xl border-t-2 bg-zinc-900`}>
+        <div
+          className={`${
+            taskNameEnterPressed === false ? "flex" : "hidden"
+          } mb-3 flex-col-reverse rounded-xl border-t-2 bg-zinc-900`}
+        >
           <input
             value={taskName}
             className="mb-2 w-4/5 self-center text-center"
@@ -153,11 +146,13 @@ export const MultInput: React.FC<Props> = ({ onSubmit }) => {
         </div>
         <div
           className={`${
-            taskNameEnterPressed === true && ownerEnterPressed === false ? "flex" : "hidden"
+            taskNameEnterPressed === true && ownerEnterPressed === false
+              ? "flex"
+              : "hidden"
           } mb-3 flex-col-reverse rounded-xl border-t-2 bg-zinc-900`}
         >
           <input
-            ref={ownerRef}                   
+            ref={ownerRef}
             value={owner}
             className="mb-2 w-4/5 self-center text-center"
             type="text"
@@ -176,9 +171,11 @@ export const MultInput: React.FC<Props> = ({ onSubmit }) => {
         </div>
         <div
           className={`${
-            ownerEnterPressed === true && deadlineIsChanged === false ? "flex" : "hidden"
+            ownerEnterPressed === true && deadlineIsChanged === false
+              ? "flex"
+              : "hidden"
           } mb-3 flex-col-reverse rounded-xl border-t-2 bg-zinc-900`}
-        >          
+        >
           <input
             ref={deadlineRef}
             value={deadLine}
@@ -201,7 +198,7 @@ export const MultInput: React.FC<Props> = ({ onSubmit }) => {
             className={`${deadlineIsChanged === true ? "flex" : "hidden"}
             mb-1 flex-col-reverse rounded-xl border-t-2 bg-zinc-900`}
           >
-            <input            
+            <input
               value={priority}
               className="w-11/12 self-center"
               type="range"
@@ -224,7 +221,13 @@ export const MultInput: React.FC<Props> = ({ onSubmit }) => {
           >
             {priorityMarkerString}
           </h2>
-          <button className={`${priorityIsChanged === true ? "inline-block" : "hidden"} text-slate-200 bg-slate-800 border-fuchsia-200 rounded p-1 mb-2 border`}>Add a Task</button>
+          <button
+            className={`${
+              priorityIsChanged === true ? "inline-block" : "hidden"
+            } mb-2 rounded border border-fuchsia-200 bg-slate-800 p-1 text-slate-200`}
+          >
+            Add a Task
+          </button>
         </div>
       </form>
     </div>

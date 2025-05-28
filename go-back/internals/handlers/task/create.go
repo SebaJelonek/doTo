@@ -1,4 +1,4 @@
-package handlers
+package tasks
 
 import (
 	"database/sql"
@@ -10,22 +10,24 @@ import (
 )
 
 type Task struct {
-	Creator        int       `json:"creator"`
-	Owner          int       `json:"owner"`
-	DeadLine       time.Time `json:"deadline"`
-	StartTime      time.Time `json:"startTime"`
-	CompletionTime time.Time `json:"completionTime"`
-	IsDone         bool      `json:"isDone"`
-	IsDeleted      bool      `json:"isDeleted"`
-	Name           string    `json:"name"`
+	Id             int    `json:"id"`
+	Creator        int    `json:"creator"`
+	Owner          int    `json:"owner"`
+	DeadLine       int    `json:"deadline"`
+	StartTime      int    `json:"startTime"`
+	CompletionTime int    `json:"completionTime"`
+	IsDone         bool   `json:"isDone"`
+	IsDeleted      bool   `json:"isDeleted"`
+	Name           string `json:"task"`
+	Priority       string `json:"priority"`
 }
 
 type NewTask struct {
-	Creator  int       `json:"creator"`
-	Owner    int       `json:"owner"`
-	Name     string    `json:"name"`
-	Priority string    `json:"priority"`
-	DeadLine time.Time `json:"deadline"`
+	Creator  int    `json:"creatorID"`
+	Owner    string `json:"owner"`
+	Name     string `json:"task"`
+	Priority string `json:"priority"`
+	DeadLine int    `json:"deadline"`
 }
 
 func AddTask(dbConnection *sql.DB) http.HandlerFunc {
@@ -34,7 +36,6 @@ func AddTask(dbConnection *sql.DB) http.HandlerFunc {
 
 		// method := r.Method
 		if method == "POST" {
-
 			var task NewTask
 
 			err := json.NewDecoder(r.Body).Decode(&task)
@@ -46,18 +47,28 @@ func AddTask(dbConnection *sql.DB) http.HandlerFunc {
 
 			defer r.Body.Close()
 
-			result, err := dbConnection.Exec("INSERT INTO tasks (creator, owner, labels, name, deadline) values ($1, $2, $3, $4, $5)",
-				task.Creator, task.Owner, task.Name, task.Priority, task.DeadLine)
+			var ownerID int
+			if err := dbConnection.QueryRow("SELECT id FROM users WHERE name = $1", task.Owner).Scan(&ownerID); err != nil {
+				if err == sql.ErrNoRows {
+					http.Error(w, "This user does not exist", 404)
+					log.Println("No user found with name: ", task.Owner)
+				} else {
+					http.Error(w, "Error while querying owner ID", 500)
+					log.Println("DB error:", err)
+				}
+				return
+			}
+			result, err := dbConnection.Exec("INSERT INTO tasks (creator, owner, start_time, name, dead_line, priority) VALUES ($1, $2, $3, $4, $5, $6)", task.Creator, ownerID, time.Now().Local().UnixMilli(), task.Name, task.DeadLine, task.Priority)
 			if err != nil {
 				http.Error(w, "Query to DB failed", 500)
-				log.Println("error: ", err)
+				log.Println("INSERT error: ", err)
 				return
 			}
 
 			affected, err := result.RowsAffected()
 			if err != nil {
 				http.Error(w, "no rows affected", 500)
-				log.Println("error: ", err)
+				log.Println("AFFECTED error: ", err)
 				return
 			}
 

@@ -3,10 +3,12 @@ package server
 import (
 	"database/sql"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 
-	"github.com/SebaJelonek/doTo/internals/handlers"
+	handlers "github.com/SebaJelonek/doTo/internals/handlers"
+	tasks "github.com/SebaJelonek/doTo/internals/handlers/task"
 	"github.com/joho/godotenv"
 )
 
@@ -16,15 +18,18 @@ type User struct {
 }
 
 func StartServer(dbConnection *sql.DB) {
-	err := godotenv.Load()
+	err := godotenv.Load(".env")
 	if err != nil {
-		fmt.Println("Error loading .env file")
+		fmt.Println("Error loading .env file ")
+		log.Println(err)
 	}
 
-	http.HandleFunc("/", handlers.Root(dbConnection))
-	http.HandleFunc("/api/add-user", handlers.AddUser(dbConnection))
-	http.HandleFunc("/api/add-item", handlers.AddItem(dbConnection))
-	http.HandleFunc("/api/tasks", handlers.AddTask(dbConnection))
+	http.HandleFunc("/api/add-user", handlers.CorsHandler(handlers.AddUser(dbConnection)))
+	http.HandleFunc("/api/add-item", handlers.CorsHandler(handlers.AddItem(dbConnection)))
+	http.HandleFunc("/api/tasks", handlers.CorsHandler(tasks.GetTask(dbConnection)))
+	http.HandleFunc("/api/task", handlers.CorsHandler(tasks.AddTask(dbConnection)))
+	//always last
+	http.HandleFunc("/", handlers.CorsHandler(handlers.Root(dbConnection)))
 
 	port := os.Getenv("PORT")
 	fmt.Printf("starting server at port: %v\n", port)

@@ -10,7 +10,7 @@ interface ISubmitFunction {
     deadLine: number,
     owner: string,
     priority: string,
-    creator: string,
+    creatorID: number,
     BACKEND: string
   ) => void;
 }
@@ -20,17 +20,21 @@ export const submitTask: ISubmitFunction['submitFunction'] = (
   deadLine,
   owner,
   priority,
-  creator,
+  creatorID,
   BACKEND
 ) => {
   
-  const newTask = { task, deadLine, owner, creator, priority};
+  const newTask = { task, deadLine, owner, creatorID, priority};
 
-  const response = useFetch('POST', `${BACKEND}/api/tasks`, newTask);
-  response?.then(({ status, _id, error }) => {
-    if (status === 200) {
-    } else {
-      console.log('call Seba for help ' + error);
+  const response = useFetch('POST', `${BACKEND}/api/task`, newTask);
+  response?.then((res) => {
+    if (res[0] === 200) {
+      console.log("this is fine " + res.status);
+    } else if (res[0]> 399 && res[0]< 599){
+      console.log("this is bad " + res[0])
+      res[1].then((res:string)=>{
+        console.log('call Seba for help ' + res);
+      })
     }
   });
 };

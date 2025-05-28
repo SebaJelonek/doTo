@@ -6,8 +6,8 @@ export const useFetch = (
     | { item: string }
     | { _id: number; itemId: string }
     | { item: string;  }
-    | { task:string, deadLine:number, owner:string, creator:string, priority:string}//incoming task
-    | { task:string, deadLine:number, owner:string, creator:string, priority:string}//outgoing task
+    | { task:string, deadLine:number, owner:string, creatorID:number, priority:string}//incoming task
+    | { task:string, deadLine:number, owner:string, creatorID:number, priority:string}//outgoing task
     | { _id: number; deadLine: number; }
 ) => {
   if (method === 'GET') {
@@ -17,7 +17,9 @@ export const useFetch = (
         headers: { 'Content-Type': 'application/json' },
         mode: 'cors',
       });
-      return response.json();
+      console.log(response);
+      
+      return [response.json(), response.status];
     };
     return fetchData();
   } else if (body !== undefined) {
@@ -28,7 +30,14 @@ export const useFetch = (
         mode: 'cors',
         body: JSON.stringify(body),
       });
-      return response.json();
+      
+      if(response.headers.get("Content-Type")?.includes("json")){
+        return response.json();
+      }
+      if(response.headers.get("Content-Type")?.includes("text"))
+      {
+        return [response.status, response.text()]
+      }
     };
     return postData();
   }
