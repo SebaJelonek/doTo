@@ -48,7 +48,7 @@ func AddTask(dbConnection *sql.DB) http.HandlerFunc {
 			defer r.Body.Close()
 
 			var ownerID int
-			if err := dbConnection.QueryRow("SELECT id FROM users WHERE name = $1", task.Owner).Scan(&ownerID); err != nil {
+			if err := dbConnection.QueryRow("SELECT id FROM users WHERE name ILIKE $1", task.Owner).Scan(&ownerID); err != nil {
 				if err == sql.ErrNoRows {
 					http.Error(w, "This user does not exist", 404)
 					log.Println("No user found with name: ", task.Owner)
@@ -72,7 +72,7 @@ func AddTask(dbConnection *sql.DB) http.HandlerFunc {
 				return
 			}
 
-			w.WriteHeader(201)
+			w.WriteHeader(200)
 			json.NewEncoder(w).Encode(map[string]string{
 				"message":       "Task added successfully",
 				"rows_affected": fmt.Sprintf("%d", affected), // convert int64 to string
