@@ -6,14 +6,11 @@ const tasks = window.localStorage.getItem('taskList')?.split(',');
 const newTasks = [1, 2, 3, 4]
 
 const initialData: { id: string; item: string }[] = [];
-const user: {id: number, name: string, email: string, tasks: number[], isDeleted: boolean, deleteTime: number | null} = 
+const user: {id: number, name: string, email: string} = 
 {
   id:1,
   name:"Seba",
   email:"kontaktowanie@gmail.com",
-  tasks:[1,2,3,4],
-  isDeleted:false,
-  deleteTime: null
 }
 
 // if (ids !== undefined && tasks !== undefined) {

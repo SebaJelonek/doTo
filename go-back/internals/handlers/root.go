@@ -8,8 +8,9 @@ import (
 )
 
 type DBUser struct {
-	ID   int    `json:"id"`
-	Name string `json:"name"`
+	ID       int    `json:"id"`
+	Name     string `json:"name"`
+	Password string `json:"password"`
 }
 
 func Root(dbConnection *sql.DB) http.HandlerFunc {

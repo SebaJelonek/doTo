@@ -9,7 +9,9 @@ export const useFetch = (
     | { task:string, deadLine:number, owner:string, creatorID:number, priority:string}//incoming task
     | { task:string, deadLine:number, owner:string, creatorID:number, priority:string}//outgoing task
     | { id: number; deadLine: number; }
-    | {id: number; checked: boolean}
+    | {id: number; checked: boolean} 
+    | {email: string, password: string}
+    | {email: string, password: string, passwordCheck: string}
 ) => {
   if (method === 'GET') {
     const fetchData = async () => {
