@@ -11,7 +11,7 @@ import (
 )
 
 type UserCreate struct {
-	Name          string `json:"name"`
+	Name          string `json:"username"`
 	Email         string `json:"email"`
 	Password      string `json:"password"`
 	PasswordCheck string `json:"passwordCheck"`

@@ -6,12 +6,17 @@ import { useAtom } from "jotai";
 export const RegisterForm: React.FC = () => {
   const [BACKEND] = useAtom(BACKEND_ATOM);
   const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [passwordCheck, setPasswordCheck] = useState("");
   const [response, setResponse] = useState("");
 
   function onEmailChange(e: React.ChangeEvent<HTMLInputElement>) {
     setEmail(e.currentTarget.value);
+  }
+
+  function onUsernameChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setUsername(e.currentTarget.value);
   }
 
   function onPasswordChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -30,6 +35,7 @@ export const RegisterForm: React.FC = () => {
     } else {
       let response = useFetch("POST", `${BACKEND}/api/user`, {
         email,
+        username,
         password,
         passwordCheck,
       });
@@ -60,6 +66,14 @@ export const RegisterForm: React.FC = () => {
         />
         <input
           className="my-4 w-5/6 rounded-md pl-1 text-center text-xl text-teal-900"
+          value={username}
+          onChange={onUsernameChange}
+          type="text"
+          name="username"
+          id="username"
+        />
+        <input
+          className="my-4 w-5/6 rounded-md pl-1 text-center text-xl text-teal-900"
           value={password}
           onChange={onPasswordChange}
           type="password"
@@ -79,7 +93,7 @@ export const RegisterForm: React.FC = () => {
           type="button"
           onClick={onSubmit}
         >
-          Login
+          Register
         </button>
       </form>
       {response !== "" && response}
