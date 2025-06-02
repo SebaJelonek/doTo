@@ -2,14 +2,13 @@ import React, { useState } from "react";
 import { useAtom } from "jotai";
 import { marginLeftAtom } from "../../../Atoms";
 import NavIcon from "../NavIcon/NavIcon";
-import ShoppingList from "../../../assets/Icons/shopping-list.png";
-import CheckList from "../../../assets/Icons/check-list.png";
-import SharedList from "../../../assets/Icons/app.png";
+import Register from "../../../assets/Icons/add-user.png";
+import Login from "../../../assets/Icons/login.png";
 
-const siteArray = [ShoppingList, CheckList, SharedList];
+const siteArray = [Login, Register];
 
-const Navbar: React.FC = () => {
-  const [active, setActive] = useState("/src/assets/Icons/shopping-list.png");
+const LoginNavbar: React.FC = () => {
+  const [active, setActive] = useState("/src/assets/Icons/login.png");
   const [, setMarginLeft] = useAtom(marginLeftAtom);
 
   const currentSite = (site: string) => {
@@ -35,4 +34,4 @@ const Navbar: React.FC = () => {
   );
 };
 
-export { Navbar };
+export { LoginNavbar };

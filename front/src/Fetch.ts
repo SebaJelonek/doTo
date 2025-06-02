@@ -2,14 +2,15 @@ export const useFetch = (
   method: 'GET' | 'POST' | "PUT",
   url: string,
   body?:
-    | {id: number}
+    | { id: number }
     | { item: string }
     | { id: number; itemId: string }
     | { item: string;  }
     | { task:string, deadLine:number, owner:string, creatorID:number, priority:string}//incoming task
     | { task:string, deadLine:number, owner:string, creatorID:number, priority:string}//outgoing task
     | { id: number; deadLine: number; }
-    | {id: number; checked: boolean} 
+    | { id: number; checked: boolean } 
+    | { id: number; isDeleted: boolean }
     | {email: string, password: string}
     | {email: string, username:string, password: string, passwordCheck: string}
 ) => {
@@ -34,13 +35,12 @@ export const useFetch = (
         mode: 'cors',
         body: JSON.stringify(body),
       });
-      
       if(response.headers.get("Content-Type")?.includes("json")){
-        return response.json();
+        return response
       }
       if(response.headers.get("Content-Type")?.includes("text"))
       {
-        return [response.status, response.text()]
+        return response.text()
       }
     };
     return postData();

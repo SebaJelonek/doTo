@@ -9,10 +9,11 @@ interface Props {
   id: number;
   task: string;
   isChecked: boolean;
+  isDeleted: boolean;
   deadline: number;
   owner: string;
   priority: string;
-  onDelete: (id: number, deadline: number) => void;
+  onDelete: (id: number, isDeleted: boolean) => void;
   BACKEND: string;
 }
 
@@ -20,6 +21,7 @@ export const CheckListElement: React.FC<Props> = ({
   id,
   task,
   isChecked,
+  isDeleted,
   owner,
   priority,
   deadline,
@@ -36,7 +38,7 @@ export const CheckListElement: React.FC<Props> = ({
   };
 
   const deleteFunc = () => {
-    onDelete(id, deadline);
+    onDelete(id, !isDeleted);
   };
 
   const showDeleteButton = (e: React.MouseEvent<HTMLDivElement>) => {

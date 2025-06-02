@@ -71,9 +71,9 @@ func GetTask(dbConnection *sql.DB) http.HandlerFunc {
 				return
 			}
 			tasks = append(tasks, task)
-			log.Println(tasks)
-		}
 
+		}
+		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		json.NewEncoder(w).Encode(tasks)
 

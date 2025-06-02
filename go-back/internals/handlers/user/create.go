@@ -56,9 +56,7 @@ func AddUser(dbConnection *sql.DB) http.HandlerFunc {
 			log.Println("error: ", err)
 			return
 		}
-
-		log.Println("we made the query")
-		log.Println("added record to db")
+		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		json.NewEncoder(w).Encode(map[string]int{
 			"id": userID,

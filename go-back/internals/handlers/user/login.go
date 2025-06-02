@@ -46,9 +46,9 @@ func LoginUser(dbConnection *sql.DB) http.HandlerFunc {
 		}
 
 		isCorrect := CheckPassword(userLogin.Password, user.Password)
-		log.Println(isCorrect)
+
 		if isCorrect {
-			log.Println("im here")
+			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(200)
 			json.NewEncoder(w).Encode(map[string]any{
 				"id":   user.ID,

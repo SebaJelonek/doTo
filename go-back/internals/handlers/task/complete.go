@@ -54,7 +54,7 @@ func CompleteTask(dbConnection *sql.DB) http.HandlerFunc {
 				return
 			}
 			log.Println(result)
-
+			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(202)
 			json.NewEncoder(w).Encode(map[string]string{
 				"message": "Task has been marked uncomplete",

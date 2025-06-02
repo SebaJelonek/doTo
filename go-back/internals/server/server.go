@@ -26,7 +26,7 @@ func StartServer(dbConnection *sql.DB) {
 	http.HandleFunc("/api/finish-task", handlers.CorsHandler(tasks.CompleteTask(dbConnection))) //complete task
 	http.HandleFunc("/api/login", handlers.CorsHandler(users.LoginUser(dbConnection)))
 	http.HandleFunc("/api/user", handlers.CorsHandler(users.AddUser(dbConnection)))
-	// http.HandleFunc("/api/delete-task", handlers.CorsHandler(tasks.DeleteTask(dbConnection)))//delete task
+	http.HandleFunc("/api/delete-task", handlers.CorsHandler(tasks.DeleteTask(dbConnection))) //delete task
 
 	//always last
 	http.HandleFunc("/", handlers.CorsHandler(handlers.Root(dbConnection)))

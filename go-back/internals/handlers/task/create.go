@@ -58,6 +58,7 @@ func AddTask(dbConnection *sql.DB) http.HandlerFunc {
 				}
 				return
 			}
+			log.Println(ownerID)
 			result, err := dbConnection.Exec("INSERT INTO tasks (creator, owner, start_time, name, dead_line, priority) VALUES ($1, $2, $3, $4, $5, $6)", task.Creator, ownerID, time.Now().Local().UnixMilli(), task.Name, task.DeadLine, task.Priority)
 			if err != nil {
 				http.Error(w, "Query to DB failed", 500)
@@ -72,6 +73,7 @@ func AddTask(dbConnection *sql.DB) http.HandlerFunc {
 				return
 			}
 
+			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(200)
 			json.NewEncoder(w).Encode(map[string]string{
 				"message":       "Task added successfully",

@@ -13,6 +13,7 @@ let taskArrayType: {
   id: number;
   task: string;
   isChecked: boolean;
+  isDeleted: boolean;
   deadline: number;
   owner: string;
   creatorID: number;
@@ -46,6 +47,7 @@ const CheckList: React.FC = () => {
             id: Math.random() * 1000,
             task: taskName,
             isChecked: false,
+            isDeleted: false,
             deadline,
             owner,
             creatorID,
@@ -58,6 +60,7 @@ const CheckList: React.FC = () => {
             id: Math.random() * 1000,
             task: taskName,
             isChecked: false,
+            isDeleted: false,
             deadline,
             owner,
             creatorID,
@@ -66,9 +69,9 @@ const CheckList: React.FC = () => {
         ]); // if it is not, we update the state with a arrow function
   };
 
-  const onDelete = (_id: number, createDate: number) => {
-    deleteTask(_id, BACKEND);
-    setTaskArray(taskArray.filter(({ id }) => id !== _id));
+  const onDelete = (id: number, isDeleted: boolean) => {
+    deleteTask(id, isDeleted, BACKEND);
+    setTaskArray(taskArray.filter(({ id: _id }) => _id !== id));
   };
 
   return (
@@ -82,22 +85,24 @@ const CheckList: React.FC = () => {
       ) : (
         <Fragment>
           <MultInput onSubmit={submitHandler} />
-          {/* <Form name='Enter task' type='text' onSubmitHandler={submitHandler} /> */}
+
           {taskArray.map(
-            ({ id, task, isChecked, deadline, owner, priority }) => {
-              return (
-                <CheckListElement
-                  key={id}
-                  id={id}
-                  task={task}
-                  isChecked={isChecked}
-                  owner={owner}
-                  priority={priority}
-                  deadline={deadline}
-                  onDelete={onDelete}
-                  BACKEND={BACKEND}
-                />
-              );
+            ({ id, task, isChecked, isDeleted, deadline, owner, priority }) => {
+              if (!isDeleted)
+                return (
+                  <CheckListElement
+                    key={id}
+                    id={id}
+                    task={task}
+                    isChecked={isChecked}
+                    isDeleted={isDeleted}
+                    owner={owner}
+                    priority={priority}
+                    deadline={deadline}
+                    onDelete={onDelete}
+                    BACKEND={BACKEND}
+                  />
+                );
             }
           )}
         </Fragment>

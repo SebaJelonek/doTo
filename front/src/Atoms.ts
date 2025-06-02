@@ -8,7 +8,7 @@ const newTasks = [1, 2, 3, 4]
 const initialData: { id: string; item: string }[] = [];
 const user: {id: number, name: string, email: string} = 
 {
-  id:1,
+  id:0,
   name:"Seba",
   email:"kontaktowanie@gmail.com",
 }

@@ -8,6 +8,7 @@ interface Tasks {
     id: number;
     task: string;
     isChecked: boolean;
+    isDeleted: boolean;
     deadline: number;
     owner: string;
     creatorID: number;
@@ -20,6 +21,7 @@ const initialTaskArray = [
     id: 1,
     task: "This is task one",
     isChecked: true,
+    isDeleted: true,
     deadline: Date.now(),
     owner: "Seba",
     creatorID: 1,
@@ -29,6 +31,7 @@ const initialTaskArray = [
     id: 2,
     task: "This is task two",
     isChecked: false,
+    isDeleted: true,
     deadline: Date.now() + 70000,
     owner: "Seba",
     creatorID: 1,
@@ -42,12 +45,10 @@ export function useFetchTasks() {
   const [sheetId] = useAtom(SheetIDAtom);
 
   useEffect(() => {
-    useFetch("GET", `${BACKEND}/api/tasks`)?.then((res) => {
+    useFetch("GET", `${BACKEND}/api/tasks`)?.then((res: any) => {
       res[0].then((fetchedTasks: any) => {
         switch (res[1]) {
           case 200:
-            console.log(res[1]);
-            console.log("200 ", fetchedTasks);
             setTasks(fetchedTasks);
             break;
           default:
