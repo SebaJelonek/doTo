@@ -12,7 +12,6 @@ const Container: React.FC = () => {
   const { marginLeftOffset } = useSpring({
     marginLeftOffset: marginLeft,
   });
-  console.log(marginLeft);
 
   // const { transform } = useSpring({
   //   transform: marginLeftOffset.get() !== 0 ? 'scale(1)' : 'scale(0.7)',

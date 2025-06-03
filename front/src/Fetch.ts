@@ -1,46 +1,74 @@
+import { atomStore, AuthTokenAtom } from "./Atoms";
+
 export const useFetch = (
-  method: 'GET' | 'POST' | "PUT",
+  method: "GET" | "POST" | "PUT",
   url: string,
   body?:
     | { id: number }
     | { item: string }
     | { id: number; itemId: string }
-    | { item: string;  }
-    | { task:string, deadLine:number, owner:string, creatorID:number, priority:string}//incoming task
-    | { task:string, deadLine:number, owner:string, creatorID:number, priority:string}//outgoing task
-    | { id: number; deadLine: number; }
-    | { id: number; checked: boolean } 
+    | { item: string }
+    | {
+        task: string;
+        deadLine: number;
+        owner: string;
+        creatorID: number;
+        priority: string;
+      } //incoming task
+    | {
+        task: string;
+        deadLine: number;
+        owner: string;
+        creatorID: number;
+        priority: string;
+      } //outgoing task
+    | { id: number; deadLine: number }
+    | { id: number; checked: boolean }
     | { id: number; isDeleted: boolean }
-    | {email: string, password: string}
-    | {email: string, username:string, password: string, passwordCheck: string}
+    | { email: string; password: string }
+    | {
+        email: string;
+        username: string;
+        password: string;
+        passwordCheck: string;
+      }
 ) => {
-  if (method === 'GET') {
+  if (method === "GET") {
     const fetchData = async () => {
       const response = await fetch(url, {
         method,
-        headers: { 'Content-Type': 'application/json' },
-        mode: 'cors',
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${atomStore.get(AuthTokenAtom)}`,
+        },
+        mode: "cors",
       });
-      console.log(response);
+      
       
       return [response.json(), response.status];
     };
+
     return fetchData();
   } else if (body !== undefined) {
-    
     const postData = async () => {
       const response = await fetch(url, {
         method,
-        headers: { 'Content-Type': 'application/json' },
-        mode: 'cors',
+        credentials: "include",
+        headers: { "Content-Type": "application/json",
+        "Authorization": `Bearer ${atomStore.get(AuthTokenAtom)}`,
+        
+      },
+        mode: "cors",
         body: JSON.stringify(body),
       });
-      if(response.headers.get("Content-Type")?.includes("json")){
-        return response
+        
+      
+      if (response.headers.get("Content-Type")?.includes("json")) {
+        atomStore.set(AuthTokenAtom, response.headers.get("Authorization")?.split(" ")[1])        
+        return response;
       }
-      if(response.headers.get("Content-Type")?.includes("text"))
-      {
-        return response.text()
+      if (response.headers.get("Content-Type")?.includes("text")) {
+        return response.text();
       }
     };
     return postData();

@@ -73,9 +73,21 @@ func LoginUser(dbConnection *sql.DB) http.HandlerFunc {
 				Expiration: time.Now().UnixMilli() + 60000,
 			}
 
-			jwt := GenerateJWT(header, payload)
-			log.Println(jwt)
+			jwt := GenerateJWT(header, payload, "session")
 
+			jwtCookie := &http.Cookie{
+				Name:     "jwt",
+				Value:    jwt,
+				Path:     "/",
+				Domain:   "localhost",
+				Expires:  time.Now().Add(time.Hour * 24),
+				HttpOnly: true,
+				Secure:   false,
+				SameSite: http.SameSiteNoneMode,
+			}
+
+			http.SetCookie(w, jwtCookie)
+			// w.Header().Set("Authorization", "Bearer "+jwt)
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(200)
 			json.NewEncoder(w).Encode(map[string]any{
@@ -97,9 +109,14 @@ func CheckPassword(password string, hashedPassword string) bool {
 	return err == nil
 }
 
-func GenerateJWT(header Header, payload Payload) string {
+func GenerateJWT(header Header, payload Payload, tokenType string) string {
 	encoder := base64.URLEncoding.WithPadding(base64.NoPadding)
-	secret := os.Getenv("SECRET")
+	var secret string
+	if tokenType == "auth" {
+		secret = os.Getenv("JWT_AUTH_SECRET")
+	} else if tokenType == "session" {
+		secret = os.Getenv("JWT_SESSION_SECRET")
+	}
 
 	jsonHeader, err := json.Marshal(header)
 	if err != nil {

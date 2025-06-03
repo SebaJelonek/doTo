@@ -12,7 +12,13 @@ func GetTask(dbConnection *sql.DB) http.HandlerFunc {
 		var tasks []Task
 
 		authToken := r.Header.Get("Authorization")
-		log.Println("this is auth token: ", authToken)
+		sessionToken, err := r.Cookie("jwt")
+		if err != nil {
+			log.Println(err)
+		}
+		log.Println("this is auth token:", authToken)
+		log.Println("this is session token:", sessionToken)
+
 		/*
 			parsing jwt logic and checking if auth token is correct/expired etc.
 
@@ -20,22 +26,23 @@ func GetTask(dbConnection *sql.DB) http.HandlerFunc {
 		*/
 
 		authToken = "1"
-		rows, err := dbConnection.Query(`SELECT 
-		t.id,
-		t.name,
-		t.is_done,
-		t.is_deleted,
-		t.start_time,
-		t.completion_time,
-		t.dead_line,
-		t.priority,
-		uc.name AS creator_name,
-		uo.name AS owner_name
-	  FROM tasks t
-	  INNER JOIN users uc ON t.creator = uc.id
-	  INNER JOIN users uo ON t.owner = uo.id
-	  WHERE t.creator = $1 AND t.owner = $1;
-	  `, authToken)
+		rows, err := dbConnection.Query(`
+		SELECT 
+			t.id,
+			t.name,
+			t.is_done,
+			t.is_deleted,
+			t.start_time,
+			t.completion_time,
+			t.dead_line,
+			t.priority,
+			uc.name AS creator_name,
+			uo.name AS owner_name
+		FROM tasks t
+		INNER JOIN users uc ON t.creator = uc.id
+		INNER JOIN users uo ON t.owner = uo.id
+		WHERE t.creator = $1 AND t.owner = $1;`,
+			authToken)
 		if err != nil {
 			http.Error(w, "Query failed", 500)
 			log.Println("query error ", err)

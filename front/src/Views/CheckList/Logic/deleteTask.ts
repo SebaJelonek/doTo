@@ -1,4 +1,3 @@
-import { useAtom } from 'jotai';
 import { useFetch } from '../../../Fetch';
 
 

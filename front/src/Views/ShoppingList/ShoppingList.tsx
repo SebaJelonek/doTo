@@ -3,6 +3,7 @@ import { useAtom } from "jotai";
 import InputField from "../../components/Form/InputField";
 import ShoppingListContainer from "./Layout/ShoppingListContainer/ShoppingListContainer";
 import {
+  AuthTokenAtom,
   BACKEND_ATOM,
   heightAtom,
   sheetEmptyAtom,
@@ -15,6 +16,7 @@ import { submitItem } from "./Logic/submitShoppingItem";
 
 const ShoppingList: React.FC = () => {
   const [BACKEND] = useAtom(BACKEND_ATOM);
+  const [authToken] = useAtom(AuthTokenAtom);
   const [sheetId] = useAtom(SheetIDAtom);
   const [shoppingList, setShoppingList] = useAtom(shoppingListAtom);
   const [sheetEmpty] = useAtom(sheetEmptyAtom);
@@ -22,13 +24,14 @@ const ShoppingList: React.FC = () => {
   const [height] = useAtom(heightAtom);
 
   // useFetchShoppingList();
+  console.log(authToken);
 
   const onSubmitHandler = (inputValue: string) =>
     submitItem(inputValue, sheetId, BACKEND, setShoppingList);
 
   return (
     <div
-      className="p-8 pt-7 pb-0"
+      className="p-8 pb-0 pt-7"
       style={{ minHeight: height - 60, minWidth: width }}
     >
       {!sheetEmpty ? (

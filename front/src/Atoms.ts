@@ -1,4 +1,7 @@
 import { atom } from 'jotai';
+import { createStore } from 'jotai/vanilla';
+
+const atomStore = createStore()
 
 const ids = window.localStorage.getItem('idsList')?.split(',');
 const tasks = window.localStorage.getItem('taskList')?.split(',');
@@ -21,6 +24,7 @@ const user: {id: number, name: string, email: string} =
 // }
 
 const UserAtom = atom(user)
+const AuthTokenAtom = atom<string | undefined>(undefined)
 const SheetIDAtom = atom('63da5d9e88970ccfe148df67'); // production
 const BACKEND_ATOM = atom('http://localhost:3000'); // production
 
@@ -46,5 +50,7 @@ export {
   widthAtom,
   scaleAtom,
   SheetIDAtom,
-  UserAtom
+  UserAtom,
+  AuthTokenAtom,
+  atomStore
 };
