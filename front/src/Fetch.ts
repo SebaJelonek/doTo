@@ -37,6 +37,7 @@ export const useFetch = (
     const fetchData = async () => {
       const response = await fetch(url, {
         method,
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${atomStore.get(AuthTokenAtom)}`,

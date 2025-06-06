@@ -14,7 +14,7 @@ export const Login: React.FC = () => {
     >
       <h1
         style={{ fontFamily: "Raleway" }}
-        className="font pt-32 pb-20 text-4xl font-medium"
+        className="font pb-20 pt-32 text-4xl font-medium"
       >
         LOGIN PAGE
       </h1>

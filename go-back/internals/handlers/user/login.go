@@ -33,6 +33,7 @@ type Header struct {
 
 type Payload struct {
 	UserID     int   `json:"userId"`
+	IssuedAt   int64 `json:"iat"`
 	Expiration int64 `json:"exp"`
 }
 
@@ -64,30 +65,40 @@ func LoginUser(dbConnection *sql.DB) http.HandlerFunc {
 		isCorrect := CheckPassword(userLogin.Password, user.Password)
 
 		if isCorrect {
-			header := Header{
+			sessionExpireDate := time.Now().Add(time.Hour * 24 * 30)
+			headerAuth := Header{
 				Alg:  "HS256",
 				Type: "JWT",
 			}
-			payload := Payload{
+			payloadAuth := Payload{
 				UserID:     user.ID,
 				Expiration: time.Now().UnixMilli() + 60000,
 			}
-
-			jwt := GenerateJWT(header, payload, "session")
+			headerSession := Header{
+				Alg:  "HS256",
+				Type: "JWT",
+			}
+			payloadSession := Payload{
+				UserID:     user.ID,
+				IssuedAt:   time.Now().UnixMilli(),
+				Expiration: sessionExpireDate.UnixMilli(),
+			}
+			jwtAuth := GenerateJWT(headerAuth, payloadAuth, "auth")
+			jwtSession := GenerateJWT(headerSession, payloadSession, "session")
 
 			jwtCookie := &http.Cookie{
 				Name:     "jwt",
-				Value:    jwt,
+				Value:    jwtSession,
 				Path:     "/",
 				Domain:   "localhost",
-				Expires:  time.Now().Add(time.Hour * 24),
+				Expires:  sessionExpireDate,
 				HttpOnly: true,
 				Secure:   false,
-				SameSite: http.SameSiteNoneMode,
+				SameSite: http.SameSiteLaxMode,
 			}
 
 			http.SetCookie(w, jwtCookie)
-			// w.Header().Set("Authorization", "Bearer "+jwt)
+			w.Header().Set("Authorization", "Bearer "+jwtAuth)
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(200)
 			json.NewEncoder(w).Encode(map[string]any{
@@ -129,6 +140,8 @@ func GenerateJWT(header Header, payload Payload, tokenType string) string {
 		log.Println(err)
 		panic(err)
 	}
+
+	log.Println("jsonheaderbyte", jsonHeader)
 
 	jsonWebHeader := encoder.EncodeToString(jsonHeader)
 	jsonWebPayload := encoder.EncodeToString(jsonPayload)

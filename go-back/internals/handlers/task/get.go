@@ -1,11 +1,73 @@
 package tasks
 
 import (
+	"crypto/hmac"
+	"crypto/sha256"
 	"database/sql"
+	"encoding/base64"
 	"encoding/json"
 	"log"
 	"net/http"
+	"os"
+	"strings"
+	"time"
+
+	users "github.com/SebaJelonek/doTo/internals/handlers/user"
 )
+
+func ValidateJWT(jwt string, tokenType string) bool {
+	secret := os.Getenv("JWT_SESSION_SECRET")
+
+	encoder := base64.URLEncoding.WithPadding(base64.NoPadding)
+	tokens := strings.Split(jwt, ".")
+	headerStringEncoded := tokens[0]
+	payloadStringEncoded := tokens[1]
+	signatureStringEncoded := tokens[2]
+	var payload users.Payload
+	var header users.Header
+
+	signatureString, err := encoder.DecodeString(signatureStringEncoded)
+	if err != nil {
+		log.Println(err)
+	}
+
+	headerString, err := encoder.DecodeString(headerStringEncoded)
+	if err != nil {
+		log.Println(err)
+	}
+
+	payloadString, err := encoder.DecodeString(payloadStringEncoded)
+	if err != nil {
+		log.Println(err)
+	}
+	payloadDecoded := []byte(payloadString)
+	headerDecoded := []byte(headerString)
+
+	err = json.Unmarshal(payloadDecoded, &payload)
+	if err != nil {
+		log.Println(err)
+	}
+
+	err = json.Unmarshal(headerDecoded, &header)
+	if err != nil {
+		log.Println(err)
+	}
+	if header.Alg == "HS256" {
+		if payload.Expiration < time.Now().UnixMilli() {
+			return false
+		} else {
+			signatureCheck := []byte(headerStringEncoded + "." + payloadStringEncoded)
+			hmacNew := hmac.New(sha256.New, []byte(secret))
+			hmacNew.Write(signatureCheck)
+			signatureCheck = hmacNew.Sum(nil)
+			isValid := hmac.Equal(signatureCheck, signatureString)
+			return isValid
+		}
+
+	} else {
+		return false
+	}
+}
 
 func GetTask(dbConnection *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -18,6 +80,12 @@ func GetTask(dbConnection *sql.DB) http.HandlerFunc {
 		}
 		log.Println("this is auth token:", authToken)
 		log.Println("this is session token:", sessionToken)
+		if sessionToken == nil {
+			log.Println("token does not exist")
+		} else {
+			isValid := ValidateJWT(sessionToken.Value, "session")
+			log.Println(isValid)
+		}
 
 		/*
 			parsing jwt logic and checking if auth token is correct/expired etc.
