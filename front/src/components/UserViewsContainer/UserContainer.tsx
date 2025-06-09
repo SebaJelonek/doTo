@@ -1,9 +1,10 @@
 import React, { useEffect } from "react";
 import { useAtom } from "jotai";
 import { animated, useSpring } from "@react-spring/web";
-import { UserAtom, marginLeftAtom } from "../../Atoms";
+import { BACKEND_ATOM, UserAtom, marginLeftAtom } from "../../Atoms";
 import { Register } from "../../Views/Register/Register";
 import { Login } from "../../Views/Login/Login";
+import { useFetch } from "../../Fetch";
 
 interface Props {
   setId: React.Dispatch<React.SetStateAction<number>>;
@@ -16,9 +17,22 @@ export const UserContainer: React.FC<Props> = ({ setId }) => {
     marginLeftOffset: marginLeft,
   });
 
+  // useEffect(() => {
+  //   setId(user.id);
+  // }, [user.id, setId]);
+
+  const [BACKEND] = useAtom(BACKEND_ATOM);
+
   useEffect(() => {
-    setId(user.id);
-  }, [user.id, setId]);
+    const response = useFetch("GET", `${BACKEND}/auth`);
+    response?.then((res: any) => {
+      if (res !== undefined) {
+        res[0].then((val: any) => {
+          setId(val.id);
+        });
+      }
+    });
+  }, []);
 
   return (
     <animated.div

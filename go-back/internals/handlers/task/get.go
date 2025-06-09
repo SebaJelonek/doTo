@@ -1,91 +1,51 @@
 package tasks
 
 import (
-	"crypto/hmac"
-	"crypto/sha256"
 	"database/sql"
-	"encoding/base64"
 	"encoding/json"
 	"log"
 	"net/http"
-	"os"
-	"strings"
-	"time"
 
-	users "github.com/SebaJelonek/doTo/internals/handlers/user"
+	jwt "github.com/SebaJelonek/doTo/internals/handlers/jwt/utils"
 )
-
-func ValidateJWT(jwt string, tokenType string) bool {
-	secret := os.Getenv("JWT_SESSION_SECRET")
-
-	encoder := base64.URLEncoding.WithPadding(base64.NoPadding)
-	tokens := strings.Split(jwt, ".")
-	headerStringEncoded := tokens[0]
-	payloadStringEncoded := tokens[1]
-	signatureStringEncoded := tokens[2]
-	var payload users.Payload
-	var header users.Header
-
-	signatureString, err := encoder.DecodeString(signatureStringEncoded)
-	if err != nil {
-		log.Println(err)
-	}
-
-	headerString, err := encoder.DecodeString(headerStringEncoded)
-	if err != nil {
-		log.Println(err)
-	}
-
-	payloadString, err := encoder.DecodeString(payloadStringEncoded)
-	if err != nil {
-		log.Println(err)
-	}
-	payloadDecoded := []byte(payloadString)
-	headerDecoded := []byte(headerString)
-
-	err = json.Unmarshal(payloadDecoded, &payload)
-	if err != nil {
-		log.Println(err)
-	}
-
-	err = json.Unmarshal(headerDecoded, &header)
-	if err != nil {
-		log.Println(err)
-	}
-	if header.Alg == "HS256" {
-		if payload.Expiration < time.Now().UnixMilli() {
-			return false
-		} else {
-			signatureCheck := []byte(headerStringEncoded + "." + payloadStringEncoded)
-			hmacNew := hmac.New(sha256.New, []byte(secret))
-			hmacNew.Write(signatureCheck)
-			signatureCheck = hmacNew.Sum(nil)
-			isValid := hmac.Equal(signatureCheck, signatureString)
-			return isValid
-		}
-
-	} else {
-		return false
-	}
-}
 
 func GetTask(dbConnection *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var tasks []Task
+
+		var isAuthValid bool
+		var userID int
 
 		authToken := r.Header.Get("Authorization")
 		sessionToken, err := r.Cookie("jwt")
 		if err != nil {
 			log.Println(err)
 		}
-		log.Println("this is auth token:", authToken)
-		log.Println("this is session token:", sessionToken)
-		if sessionToken == nil {
-			log.Println("token does not exist")
-		} else {
-			isValid := ValidateJWT(sessionToken.Value, "session")
-			log.Println(isValid)
-		}
+
+		isAuthValid, userID = jwt.ValidateJWT(authToken, "auth")
+
+		log.Println(sessionToken)
+		log.Println(isAuthValid)
+
+		// if isAuthValid {
+		// 	next()
+		// } else {
+		// 	http.Error(w, "Auth expired", 401)
+		// 	/*
+		// 		now client(my front gets 401 with message auth expired)
+		// 		i redirect the client to /refresh page
+		// 		where i check the session token
+		// 		if it is valid i just regenerate new auth token
+		// 		else force logout and i ask the client to log in again
+		// 		now...
+		// 		is it the only way to do it?
+		// 		can i somehow renew session without login/logout of the user
+		// 		for example its day 25 of 30 day session
+		// 		i check it and see that session is about to end
+		// 		so i renew the session token based on expired date
+		// 		is it good idea?
+		// 	*/
+		// }
 
 		/*
 			parsing jwt logic and checking if auth token is correct/expired etc.
@@ -93,7 +53,6 @@ func GetTask(dbConnection *sql.DB) http.HandlerFunc {
 			userID, err := jwtParser(authToken)
 		*/
 
-		authToken = "1"
 		rows, err := dbConnection.Query(`
 		SELECT 
 			t.id,
@@ -109,8 +68,9 @@ func GetTask(dbConnection *sql.DB) http.HandlerFunc {
 		FROM tasks t
 		INNER JOIN users uc ON t.creator = uc.id
 		INNER JOIN users uo ON t.owner = uo.id
-		WHERE t.creator = $1 AND t.owner = $1;`,
-			authToken)
+		WHERE t.creator = $1 OR t.owner = $1;`,
+			userID)
+
 		if err != nil {
 			http.Error(w, "Query failed", 500)
 			log.Println("query error ", err)
@@ -148,6 +108,7 @@ func GetTask(dbConnection *sql.DB) http.HandlerFunc {
 			tasks = append(tasks, task)
 
 		}
+
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		json.NewEncoder(w).Encode(tasks)

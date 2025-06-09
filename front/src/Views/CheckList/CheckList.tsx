@@ -41,7 +41,7 @@ const CheckList: React.FC = () => {
     priority: string
   ) => {
     submitTask(taskName, deadline, owner, priority, creatorID, BACKEND);
-    taskArray === undefined // checking if task array is undefined(empty)
+    taskArray === undefined || taskArray === null // checking if task array is undefined(empty)
       ? setTaskArray([
           {
             id: Math.random() * 1000,
@@ -54,7 +54,20 @@ const CheckList: React.FC = () => {
             priority,
           },
         ]) // if it is, we push an array into it
-      : setTaskArray((prevState) => [
+      : // : setTaskArray([
+        //     {
+        //       id: Math.random() * 1000,
+        //       task: taskName,
+        //       isChecked: false,
+        //       isDeleted: false,
+        //       deadline,
+        //       owner,
+        //       creatorID,
+        //       priority,
+        //     },
+        //   ]); // if it is not, we update the state with a arrow function
+
+        setTaskArray((prevState) => [
           ...prevState,
           {
             id: Math.random() * 1000,
@@ -75,8 +88,8 @@ const CheckList: React.FC = () => {
   };
 
   return (
-    <div className="p-8 pt-7 pb-0" style={pageStyle}>
-      {taskArray === undefined ? (
+    <div className="p-8 pb-0 pt-7" style={pageStyle}>
+      {taskArray === undefined || taskArray === null ? (
         <Fragment>
           <h2 className="mb-4 text-4xl text-rose-400">Check list is empty</h2>
           <h2 className="mb-8 text-3xl text-rose-400">Add new task below</h2>

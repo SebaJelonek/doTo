@@ -33,32 +33,41 @@ export const useFetch = (
         passwordCheck: string;
       }
 ) => {
+  
+
+  let header :HeadersInit
+  if (atomStore.get(AuthTokenAtom)) {
+    header = { 
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${atomStore.get(AuthTokenAtom)}`,
+    }
+  } else {
+    header = {"Content-Type": "application/json",}
+    
+  }
+
   if (method === "GET") {
     const fetchData = async () => {
       const response = await fetch(url, {
         method,
         credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${atomStore.get(AuthTokenAtom)}`,
-        },
+        headers: header,
         mode: "cors",
       });
+
       
       
       return [response.json(), response.status];
     };
 
     return fetchData();
+
   } else if (body !== undefined) {
     const postData = async () => {
       const response = await fetch(url, {
         method,
         credentials: "include",
-        headers: { "Content-Type": "application/json",
-        "Authorization": `Bearer ${atomStore.get(AuthTokenAtom)}`,
-        
-      },
+        headers: header,
         mode: "cors",
         body: JSON.stringify(body),
       });

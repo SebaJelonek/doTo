@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { LoginForm } from "./LoginForm/LoginForm";
-import { heightAtom, widthAtom } from "../../Atoms";
+import { BACKEND_ATOM, heightAtom, widthAtom } from "../../Atoms";
 import { useAtom } from "jotai";
+import { useFetch } from "../../Fetch";
 
 export const Login: React.FC = () => {
   const [width] = useAtom(widthAtom);

@@ -1,17 +1,14 @@
 package users
 
 import (
-	"crypto/hmac"
-	"crypto/sha256"
 	"database/sql"
-	"encoding/base64"
 	"encoding/json"
 	"log"
 	"net/http"
-	"os"
 	"strings"
 	"time"
 
+	jwt "github.com/SebaJelonek/doTo/internals/handlers/jwt/utils"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -24,17 +21,6 @@ type User struct {
 	ID       int    `json:"id"`
 	Name     string `json:"name"`
 	Password string
-}
-
-type Header struct {
-	Alg  string `json:"alg"`
-	Type string `json:"typ"`
-}
-
-type Payload struct {
-	UserID     int   `json:"userId"`
-	IssuedAt   int64 `json:"iat"`
-	Expiration int64 `json:"exp"`
 }
 
 func LoginUser(dbConnection *sql.DB) http.HandlerFunc {
@@ -66,25 +52,28 @@ func LoginUser(dbConnection *sql.DB) http.HandlerFunc {
 
 		if isCorrect {
 			sessionExpireDate := time.Now().Add(time.Hour * 24 * 30)
-			headerAuth := Header{
+			authExpireDate := time.Now().Add(time.Minute * 30).UnixMilli()
+			jti := 1
+			header := jwt.Header{
 				Alg:  "HS256",
 				Type: "JWT",
 			}
-			payloadAuth := Payload{
+
+			payloadAuth := jwt.Payload{
 				UserID:     user.ID,
-				Expiration: time.Now().UnixMilli() + 60000,
+				IssuedAt:   time.Now().UnixMilli(),
+				Expiration: authExpireDate,
 			}
-			headerSession := Header{
-				Alg:  "HS256",
-				Type: "JWT",
-			}
-			payloadSession := Payload{
+
+			payloadSession := jwt.Payload{
 				UserID:     user.ID,
 				IssuedAt:   time.Now().UnixMilli(),
 				Expiration: sessionExpireDate.UnixMilli(),
+				JWTID:      &jti,
 			}
-			jwtAuth := GenerateJWT(headerAuth, payloadAuth, "auth")
-			jwtSession := GenerateJWT(headerSession, payloadSession, "session")
+
+			jwtAuth := jwt.GenerateJWT(header, payloadAuth, "auth")
+			jwtSession := jwt.GenerateJWT(header, payloadSession, "session")
 
 			jwtCookie := &http.Cookie{
 				Name:     "jwt",
@@ -98,9 +87,12 @@ func LoginUser(dbConnection *sql.DB) http.HandlerFunc {
 			}
 
 			http.SetCookie(w, jwtCookie)
+
 			w.Header().Set("Authorization", "Bearer "+jwtAuth)
 			w.Header().Set("Content-Type", "application/json")
+
 			w.WriteHeader(200)
+
 			json.NewEncoder(w).Encode(map[string]any{
 				"id":   user.ID,
 				"name": user.Name,
@@ -118,41 +110,4 @@ func LoginUser(dbConnection *sql.DB) http.HandlerFunc {
 func CheckPassword(password string, hashedPassword string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 	return err == nil
-}
-
-func GenerateJWT(header Header, payload Payload, tokenType string) string {
-	encoder := base64.URLEncoding.WithPadding(base64.NoPadding)
-	var secret string
-	if tokenType == "auth" {
-		secret = os.Getenv("JWT_AUTH_SECRET")
-	} else if tokenType == "session" {
-		secret = os.Getenv("JWT_SESSION_SECRET")
-	}
-
-	jsonHeader, err := json.Marshal(header)
-	if err != nil {
-		log.Println(err)
-		panic(err)
-	}
-
-	jsonPayload, err := json.Marshal(payload)
-	if err != nil {
-		log.Println(err)
-		panic(err)
-	}
-
-	log.Println("jsonheaderbyte", jsonHeader)
-
-	jsonWebHeader := encoder.EncodeToString(jsonHeader)
-	jsonWebPayload := encoder.EncodeToString(jsonPayload)
-
-	jw := jsonWebHeader + "." + jsonWebPayload
-
-	hmac := hmac.New(sha256.New, []byte(secret))
-	hmac.Write([]byte(jw))
-
-	jwHashed := hmac.Sum(nil)
-
-	jwt := jw + "." + encoder.EncodeToString(jwHashed)
-	return jwt
 }

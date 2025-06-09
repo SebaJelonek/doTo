@@ -8,6 +8,7 @@ import (
 	"os"
 
 	handlers "github.com/SebaJelonek/doTo/internals/handlers"
+	"github.com/SebaJelonek/doTo/internals/handlers/jwt"
 	tasks "github.com/SebaJelonek/doTo/internals/handlers/task"
 	users "github.com/SebaJelonek/doTo/internals/handlers/user"
 	"github.com/joho/godotenv"
@@ -27,6 +28,7 @@ func StartServer(dbConnection *sql.DB) {
 	http.HandleFunc("/api/login", handlers.CorsHandler(users.LoginUser(dbConnection)))
 	http.HandleFunc("/api/user", handlers.CorsHandler(users.AddUser(dbConnection)))
 	http.HandleFunc("/api/delete-task", handlers.CorsHandler(tasks.DeleteTask(dbConnection))) //delete task
+	http.HandleFunc("/auth", handlers.CorsHandler(jwt.AuthCheck(dbConnection)))
 
 	//always last
 	http.HandleFunc("/", handlers.CorsHandler(handlers.Root(dbConnection)))
