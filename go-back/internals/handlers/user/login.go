@@ -23,7 +23,7 @@ type User struct {
 	Password string
 }
 
-func LoginUser(dbConnection *sql.DB) http.HandlerFunc {
+func Login(dbConnection *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		var userLogin UserLogin

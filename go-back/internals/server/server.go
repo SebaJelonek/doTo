@@ -21,20 +21,13 @@ func StartServer(dbConnection *sql.DB) {
 		log.Println(err)
 	}
 
-	pass := os.Getenv("EMAIL_PASSWORD")
-	brevo := handlers.EmailConfig{SMTPHost: "smtp-relay.brevo.com", SMTPPort: "587", Email: "8f6f36001@smtp-brevo.com", Password: pass}
-	err = handlers.SendEmail(
-		brevo,
-		handlers.Message{To: []string{"artur.charatynowicz.carfree@gmail.com", "do2@engineer.com", "hubabubakuba@interia.eu"}, Subject: "test", Body: "no co tam doktorku?"})
-	if err != nil {
-		log.Println(err)
-	}
 	http.HandleFunc("/api/add-item", middleware.Cors(middleware.Auth(dbConnection, handlers.AddItem(dbConnection))))
 	http.HandleFunc("/api/tasks", middleware.Cors(middleware.Auth(dbConnection, tasks.GetTask(dbConnection))))
 	http.HandleFunc("/api/task", middleware.Cors(middleware.Auth(dbConnection, tasks.AddTask(dbConnection))))             //create task
 	http.HandleFunc("/api/finish-task", middleware.Cors(middleware.Auth(dbConnection, tasks.CompleteTask(dbConnection)))) //complete task
-	http.HandleFunc("/api/login", middleware.Cors(middleware.Auth(dbConnection, users.LoginUser(dbConnection))))
-	http.HandleFunc("/api/user", middleware.Cors(middleware.Auth(dbConnection, users.AddUser(dbConnection))))
+	http.HandleFunc("/api/login", middleware.Cors(middleware.Auth(dbConnection, users.Login(dbConnection))))
+	http.HandleFunc("/api/user", middleware.Cors(middleware.Auth(dbConnection, users.Add(dbConnection))))
+	http.HandleFunc("/verify", middleware.Cors(middleware.Auth(dbConnection, users.Verify(dbConnection))))
 	http.HandleFunc("/api/delete-task", middleware.Cors(middleware.Auth(dbConnection, tasks.DeleteTask(dbConnection)))) //delete task
 
 	//always last
