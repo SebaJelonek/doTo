@@ -8,9 +8,9 @@ import (
 	"os"
 
 	handlers "github.com/SebaJelonek/doTo/internals/handlers"
-	"github.com/SebaJelonek/doTo/internals/handlers/jwt"
 	tasks "github.com/SebaJelonek/doTo/internals/handlers/task"
 	users "github.com/SebaJelonek/doTo/internals/handlers/user"
+	middleware "github.com/SebaJelonek/doTo/internals/middleware"
 	"github.com/joho/godotenv"
 )
 
@@ -21,17 +21,24 @@ func StartServer(dbConnection *sql.DB) {
 		log.Println(err)
 	}
 
-	http.HandleFunc("/api/add-item", handlers.CorsHandler(handlers.AddItem(dbConnection)))
-	http.HandleFunc("/api/tasks", handlers.CorsHandler(tasks.GetTask(dbConnection)))
-	http.HandleFunc("/api/task", handlers.CorsHandler(tasks.AddTask(dbConnection)))             //create task
-	http.HandleFunc("/api/finish-task", handlers.CorsHandler(tasks.CompleteTask(dbConnection))) //complete task
-	http.HandleFunc("/api/login", handlers.CorsHandler(users.LoginUser(dbConnection)))
-	http.HandleFunc("/api/user", handlers.CorsHandler(users.AddUser(dbConnection)))
-	http.HandleFunc("/api/delete-task", handlers.CorsHandler(tasks.DeleteTask(dbConnection))) //delete task
-	http.HandleFunc("/auth", handlers.CorsHandler(jwt.AuthCheck(dbConnection)))
+	pass := os.Getenv("EMAIL_PASSWORD")
+	brevo := handlers.EmailConfig{SMTPHost: "smtp-relay.brevo.com", SMTPPort: "587", Email: "8f6f36001@smtp-brevo.com", Password: pass}
+	err = handlers.SendEmail(
+		brevo,
+		handlers.Message{To: []string{"artur.charatynowicz.carfree@gmail.com", "do2@engineer.com", "hubabubakuba@interia.eu"}, Subject: "test", Body: "no co tam doktorku?"})
+	if err != nil {
+		log.Println(err)
+	}
+	http.HandleFunc("/api/add-item", middleware.Cors(middleware.Auth(dbConnection, handlers.AddItem(dbConnection))))
+	http.HandleFunc("/api/tasks", middleware.Cors(middleware.Auth(dbConnection, tasks.GetTask(dbConnection))))
+	http.HandleFunc("/api/task", middleware.Cors(middleware.Auth(dbConnection, tasks.AddTask(dbConnection))))             //create task
+	http.HandleFunc("/api/finish-task", middleware.Cors(middleware.Auth(dbConnection, tasks.CompleteTask(dbConnection)))) //complete task
+	http.HandleFunc("/api/login", middleware.Cors(middleware.Auth(dbConnection, users.LoginUser(dbConnection))))
+	http.HandleFunc("/api/user", middleware.Cors(middleware.Auth(dbConnection, users.AddUser(dbConnection))))
+	http.HandleFunc("/api/delete-task", middleware.Cors(middleware.Auth(dbConnection, tasks.DeleteTask(dbConnection)))) //delete task
 
 	//always last
-	http.HandleFunc("/", handlers.CorsHandler(handlers.Root(dbConnection)))
+	http.HandleFunc("/", middleware.Cors(middleware.Auth(dbConnection, handlers.Root(dbConnection))))
 
 	port := os.Getenv("PORT")
 	fmt.Printf("starting server at port: %v\n", port)

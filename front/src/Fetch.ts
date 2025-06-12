@@ -34,9 +34,10 @@ export const useFetch = (
       }
 ) => {
   
-
+  
   let header :HeadersInit
   if (atomStore.get(AuthTokenAtom)) {
+    console.log(atomStore.get(AuthTokenAtom))
     header = { 
       "Content-Type": "application/json",
       "Authorization": `Bearer ${atomStore.get(AuthTokenAtom)}`,
@@ -45,7 +46,6 @@ export const useFetch = (
     header = {"Content-Type": "application/json",}
     
   }
-
   if (method === "GET") {
     const fetchData = async () => {
       const response = await fetch(url, {
@@ -54,6 +54,7 @@ export const useFetch = (
         headers: header,
         mode: "cors",
       });
+      
 
       
       

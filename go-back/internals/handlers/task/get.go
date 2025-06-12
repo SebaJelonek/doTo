@@ -6,52 +6,27 @@ import (
 	"log"
 	"net/http"
 
-	jwt "github.com/SebaJelonek/doTo/internals/handlers/jwt/utils"
+	jwt "github.com/SebaJelonek/doTo/internals/jwt"
 )
 
 func GetTask(dbConnection *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var tasks []Task
-
-		var isAuthValid bool
 		var userID int
-
 		authToken := r.Header.Get("Authorization")
 		sessionToken, err := r.Cookie("jwt")
+
 		if err != nil {
-			log.Println(err)
+			log.Println("session is not there")
+			http.Error(w, "Session expired please log in", 403)
 		}
 
-		isAuthValid, userID = jwt.ValidateJWT(authToken, "auth")
-
-		log.Println(sessionToken)
-		log.Println(isAuthValid)
-
-		// if isAuthValid {
-		// 	next()
-		// } else {
-		// 	http.Error(w, "Auth expired", 401)
-		// 	/*
-		// 		now client(my front gets 401 with message auth expired)
-		// 		i redirect the client to /refresh page
-		// 		where i check the session token
-		// 		if it is valid i just regenerate new auth token
-		// 		else force logout and i ask the client to log in again
-		// 		now...
-		// 		is it the only way to do it?
-		// 		can i somehow renew session without login/logout of the user
-		// 		for example its day 25 of 30 day session
-		// 		i check it and see that session is about to end
-		// 		so i renew the session token based on expired date
-		// 		is it good idea?
-		// 	*/
-		// }
-
-		/*
-			parsing jwt logic and checking if auth token is correct/expired etc.
-
-			userID, err := jwtParser(authToken)
-		*/
+		if len(authToken) > 3 {
+			userID = jwt.Decode(authToken)
+			log.Println("authToken", authToken)
+		} else {
+			userID = jwt.Decode(sessionToken.Value)
+		}
 
 		rows, err := dbConnection.Query(`
 		SELECT 

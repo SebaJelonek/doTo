@@ -5,36 +5,32 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+
+	jwt "github.com/SebaJelonek/doTo/internals/jwt"
 )
 
 type DBUser struct {
-	ID       int    `json:"id"`
-	Name     string `json:"name"`
-	Password string `json:"password"`
+	ID    int    `json:"id"`
+	Name  string `json:"name"`
+	Email string `json:"email"`
 }
 
 func Root(dbConnection *sql.DB) http.HandlerFunc {
-	rows, err := dbConnection.Query("SELECT id, name FROM USERS")
-	if err != nil {
-		log.Fatal("error: ", err)
-	}
-	defer rows.Close()
-
-	var users []DBUser
-
-	for rows.Next() {
-		var user DBUser
-		if err := rows.Scan(&user.ID, &user.Name); err != nil {
-			log.Println("error scanning row: ", err)
-			continue
-		}
-		log.Println(user.ID, " ", user.Name)
-		users = append(users, user)
-	}
 	return func(w http.ResponseWriter, r *http.Request) {
+		var user DBUser
+		cookie, err := r.Cookie("jwt")
+		if err != nil {
+			http.Error(w, "Session expired please log in", 401)
+		}
+		var id = jwt.Decode(cookie.Value)
+		log.Println("root id", id)
 		w.Header().Set("Content-Type", "application/json")
+		err = dbConnection.QueryRow("SELECT id, name, email FROM USERS WHERE id = $1", id).Scan(&user.ID, &user.Name, &user.Email)
+		if err != nil {
+			log.Fatal("error: ", err)
+		}
 
-		err := json.NewEncoder(w).Encode(users)
+		err = json.NewEncoder(w).Encode(user)
 		if err != nil {
 			http.Error(w, "Error encoding JSON", 500)
 			log.Println("JSON encode error: ", err)

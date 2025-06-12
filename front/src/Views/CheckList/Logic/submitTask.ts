@@ -27,7 +27,7 @@ export const submitTask: ISubmitFunction['submitFunction'] = (
   const newTask = { task, deadLine, owner, creatorID, priority};
 
   const response = useFetch('POST', `${BACKEND}/api/task`, newTask);
-  response?.then((res) => {
+  response?.then((res:any) => {
     if (res[0] === 200) {
       console.log("this is fine " + res.status);
     } else if (res[0]> 399 && res[0]< 599){

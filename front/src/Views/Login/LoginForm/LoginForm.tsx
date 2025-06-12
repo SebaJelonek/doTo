@@ -31,6 +31,9 @@ export const LoginForm: React.FC = () => {
         setResponse(res);
       } else {
         res.json().then((res: any) => {
+          console.log("id: ", res.id);
+          console.log("name: ", res.name);
+          console.log("email: ", res.email);
           setUser({ id: res.id, name: res.name, email });
         });
       }

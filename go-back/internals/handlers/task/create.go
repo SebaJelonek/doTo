@@ -58,7 +58,8 @@ func AddTask(dbConnection *sql.DB) http.HandlerFunc {
 				}
 				return
 			}
-			log.Println(ownerID)
+			log.Println("owner", ownerID)
+			log.Println("creator", task.Creator)
 			result, err := dbConnection.Exec("INSERT INTO tasks (creator, owner, start_time, name, dead_line, priority) VALUES ($1, $2, $3, $4, $5, $6)", task.Creator, ownerID, time.Now().Local().UnixMilli(), task.Name, task.DeadLine, task.Priority)
 			if err != nil {
 				http.Error(w, "Query to DB failed", 500)

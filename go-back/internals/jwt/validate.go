@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-func ValidateJWT(jwt string, tokenType string) (bool, int) {
+func Validate(jwt string, tokenType string) (bool, int) {
 	var userID int
 	var secret string
 	if len(jwt) < 3 {

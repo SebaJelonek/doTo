@@ -148,27 +148,139 @@
 
 ---
 
+### 🗓️ **June 9-10, 2025 — Days 12 and 13: Token rotation implementation**
+
+🚧 Struggles & Debugging
+
+    Circular Imports: Ran into Go's import cycle not allowed error when trying to access ValidateJWT logic from different handler packages. Solved by extracting JWT-related code into its own jwt/ package. This helped untangle responsibilities and avoid cross-dependencies.
+
+    Token distinction logic: Needed a reliable way to differentiate between short-lived auth tokens and long-lived session tokens. Originally used jti != nil as a check, which works but feels implicit. Considered alternatives like a TokenType or iss field for more explicit validation but decided to keep jti for now due to its simplicity.
+
+    Zero iat bug: Auth tokens were being generated with iat: 0. With help from DeepSeek, realized this was a bug — now using time.Now().UnixMilli() to generate accurate timestamps.
+
+✅ What I Implemented
+
+    /auth endpoint (named AuthCheck) that:
+
+        Validates the auth token if present.
+
+        Falls back to the session token if auth is expired.
+
+        Regenerates a new auth token if session is still valid.
+
+        Returns user info (id, name) on success.
+
+    useEffect() hook on the frontend (login view) that calls /auth immediately when the app loads.
+
+        If the backend confirms the session is valid, it updates the frontend user state and seamlessly transitions from login screen to main app.
+
+    JWT payload structure improvements:
+
+        Optional jti field using *int + omitempty for session tokens only.
+
+        Corrected and consistent iat and exp timestamps.
+
+        Added iss (issuer) support for future-proofing.
+
+🔒 Security Learnings
+
+    Short-lived tokens reduce exposure if leaked (30 min expiry for auth).
+
+    Session tokens can be refreshed silently from the backend when nearing expiration (e.g., at day 25 of a 30-day session).
+
+    No sensitive data in JWTs (only uid, iat, exp, jti, and optionally iss).
+
+    The signature changes as expected when payload changes, even if header remains the same.
+
+🔄 Improvements for UX
+
+    Silent token renewal now fully happens on the backend — the client doesn't even see a 401 during refresh.
+
+    Frontend doesn't need redirect/retry logic anymore.
+
+    Session expiration is the only reason a user ever sees a forced login again.
+
+📚 What I Learned
+
+    How to structure Go packages to avoid circular imports and maintain modular code.
+
+    Best practices for JWT design (e.g., why jti, iss, and iat matter).
+
+    How to use Go pointers + omitempty for optional fields in JSON structs.
+
+    How to build a transparent, secure token refresh mechanism entirely in middleware.
+
+### 🗓️ **June 11, 2025 — Days 14: Auth changes, Email sending implementation **
+
+🚧 Struggles & Debugging
+
+1.  I was using the id which is coming from the /auth endpoint
+
+But once i change the endpoint to middleware i could not use the id
+I did not send it via json so frontend could not use it this way
+
+So i added decode.go which is called in / endpoint which i now use to check if there is session
+Once you enter the frontend the call is made to / and it decodes the session cookie
+Gets the id from there and sends it back to json
+
+2.  Once i got this working i struggeled to update the state of the top level component(App)
+    There is a ternery which either returns the login view or app view
+    But the call was made from loginform which is 4 levels lower
+    because i did not want to prop drill i used jotai useAtom to do it
+
+but... the state on the top was not visible
+because provider is underneath the App component
+So i was trying different approaches of useEffect to have it captured
+
+Finally i update the user with jotai atom
+once its changed the component beneath App is waiting for the change made to user object
+once the change is done the setState(coming from App as prop) function changes the id
+and the view changes to app view instead of login
+
+3.  Full on issues with sending email with mail.com
+    I finally switched to brevo.com which also did not work at the beginning
+
+The issue was that while using Brevo you provide their relayed email e.g. 8f6f36001@smtp-brevo.com
+this email is not authenticated and fails to send any messages
+
+you need to use your own email but when trying to "login"(smtp auth) with your email it fails
+so... you use the email from brevo to auth yourself
+but... while building the message you need to use your verified email as "from" in order for it to work
+
+Took way too long to have it working
+
+✅ What I Implemented
+
+I have once again changed the folder structure and naming conventions
+I have moved jwt outside of handlers, its in internals now
+
+I have added the middleware folder, auth and cors are there
+I have changed names of jwt functions
+from: GenerateJWT
+to: Generate
+
+so the usage of imported changed
+from: jwt.GenerateJWT
+to: jwt.Generate
+
 ## 🔚 Summary of Features Completed
 
 | Feature                      | Status            |
 | ---------------------------- | ----------------- |
 | `.env` load bug              | ✅ Fixed          |
-| CORS setup (manual)          | ✅ Completed      |
+| CORS setup (manual)          | ✅ Done           |
 | Task creation endpoint       | ✅ Done           |
 | Task completion              | ✅ Done           |
 | Task fetch (authenticated)   | ✅ Done           |
 | Cookie JWT auth              | ✅ Works (in dev) |
 | JWT parsing + validation     | ✅ Done           |
-| Email verification plan      | 📝 Planned        |
-| Token rotation + refresh JWT | ✅ Designed       |
+| Token rotation + refresh JWT | ✅ Done           |
 | Folder structure & handlers  | ✅ Restructured   |
+| Email verification           | 📝 Planned        |
 
 ---
 
 ## 🚀 Next Steps & Plan
-
-- 🔄 **Token rotation implementation**  
-  Although token rotation design is completed, the actual implementation is still on the way. This feature will be huge for security and session management.
 
 - ⏰ **Deadline notification feature**  
   Implement a system to notify the owner of a task via email when the deadline is approaching.
@@ -183,14 +295,14 @@
   Ensure that only the task creator can delete (approve deletion of) the task.
 
 - 🛒 **Shopping view backend integration**  
-  Implement all backend endpoints, database queries, and logic to support the shopping/barcode cards feature.
+  Implement all backend endpoints, database queries, and logic to support the shopping list/barcode view features.
 
 - 👥 **Group system for users**  
   Build support for user groups to reflect real-life contexts like households, trips, or friend projects.
 
-  - Users can add/remove others by **email** (since it's unique)
+  - Users can add/remove others by **email** (since it's unique, the name is not)
   - Send email notifications on **invitations and group changes**
-  - Support assigning tasks within the group using usernames
+  - Support assigning tasks within the group using usernames only(assigning tasks is done by name, which is not unique)
 
 - 🚢 **Deployment & merging**  
   After completing the token rotation implementation and shopping view integration, deploy the application and merge the `dev` branch into `main`.

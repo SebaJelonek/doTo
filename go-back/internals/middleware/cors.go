@@ -1,8 +1,8 @@
-package handlers
+package middleware
 
 import "net/http"
 
-func CorsHandler(handler http.HandlerFunc) http.HandlerFunc {
+func Cors(handler http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		println("🟢 CorsHandler running for:", r.URL.Path)
 

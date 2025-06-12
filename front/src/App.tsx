@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Provider } from "jotai";
 import "./App.css";
 
@@ -6,15 +6,15 @@ import { Navbar } from "./components/Navigation/Navbar/Navbar";
 import Container from "./components/Container/Container";
 import { UserContainer } from "./components/UserViewsContainer/UserContainer";
 import { LoginNavbar } from "./components/Navigation/Navbar/LoginNavBar";
-import { atomStore } from "./Atoms";
+import { UserAtom, atomStore } from "./Atoms";
 
 function App() {
-  const [id, setId] = useState<number>(0);
+  const [id, setId] = useState(atomStore.get(UserAtom).id);
 
   return (
     <div className="App">
       <Provider store={atomStore}>
-        {id === 0 ? (
+        {id === 0 || id === undefined ? (
           <Fragment>
             <UserContainer setId={setId} />
             <LoginNavbar />

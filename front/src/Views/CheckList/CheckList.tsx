@@ -40,6 +40,8 @@ const CheckList: React.FC = () => {
     deadline: number,
     priority: string
   ) => {
+    console.log(owner);
+
     submitTask(taskName, deadline, owner, priority, creatorID, BACKEND);
     taskArray === undefined || taskArray === null // checking if task array is undefined(empty)
       ? setTaskArray([

@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	jwt "github.com/SebaJelonek/doTo/internals/handlers/jwt/utils"
+	jwt "github.com/SebaJelonek/doTo/internals/jwt"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -72,8 +72,8 @@ func LoginUser(dbConnection *sql.DB) http.HandlerFunc {
 				JWTID:      &jti,
 			}
 
-			jwtAuth := jwt.GenerateJWT(header, payloadAuth, "auth")
-			jwtSession := jwt.GenerateJWT(header, payloadSession, "session")
+			jwtAuth := jwt.Generate(header, payloadAuth, "auth")
+			jwtSession := jwt.Generate(header, payloadSession, "session")
 
 			jwtCookie := &http.Cookie{
 				Name:     "jwt",

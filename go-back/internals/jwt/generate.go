@@ -9,7 +9,7 @@ import (
 	"os"
 )
 
-func GenerateJWT(header Header, payload Payload, tokenType string) string {
+func Generate(header Header, payload Payload, tokenType string) string {
 	encoder := base64.URLEncoding.WithPadding(base64.NoPadding)
 	var secret string
 	if tokenType == "auth" {
@@ -30,7 +30,7 @@ func GenerateJWT(header Header, payload Payload, tokenType string) string {
 		panic(err)
 	}
 
-	log.Println("jsonheaderbyte", jsonHeader)
+	log.Println("generate, why?", tokenType)
 
 	jsonWebHeader := encoder.EncodeToString(jsonHeader)
 	jsonWebPayload := encoder.EncodeToString(jsonPayload)

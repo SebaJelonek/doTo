@@ -17,18 +17,19 @@ export const UserContainer: React.FC<Props> = ({ setId }) => {
     marginLeftOffset: marginLeft,
   });
 
-  // useEffect(() => {
-  //   setId(user.id);
-  // }, [user.id, setId]);
-
   const [BACKEND] = useAtom(BACKEND_ATOM);
 
   useEffect(() => {
-    const response = useFetch("GET", `${BACKEND}/auth`);
+    setId(user.id);
+  }, [user]);
+
+  useEffect(() => {
+    const response = useFetch("GET", `${BACKEND}/`);
     response?.then((res: any) => {
       if (res !== undefined) {
         res[0].then((val: any) => {
           setId(val.id);
+          console.log("co? ", val.id);
         });
       }
     });
