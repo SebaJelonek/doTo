@@ -82,7 +82,7 @@ func Login(dbConnection *sql.DB) http.HandlerFunc {
 				Expires:  sessionExpireDate,
 				HttpOnly: true,
 				Secure:   false,
-				SameSite: http.SameSiteLaxMode,
+				SameSite: http.SameSiteNoneMode,
 			}
 
 			http.SetCookie(w, jwtCookie)
