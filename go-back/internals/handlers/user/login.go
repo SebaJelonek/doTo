@@ -81,7 +81,7 @@ func Login(dbConnection *sql.DB) http.HandlerFunc {
 				Path:     "/",
 				Expires:  sessionExpireDate,
 				HttpOnly: true,
-				Secure:   false,
+				Secure:   true,
 				SameSite: http.SameSiteNoneMode,
 			}
 
