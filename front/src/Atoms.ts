@@ -32,6 +32,7 @@ const BACKEND_ATOM = atom('http://localhost:3000'); // production
 // const BACKEND_ATOM = atom('https://dotoback.onrender.com'); // dev
 const sheetEmptyAtom = atom(true);
 const textAtom = atom('');
+const intHelper = atom(0);
 const idAtom = atom(1);
 const shoppingListAtom = atom(initialData);
 const marginLeftAtom = atom(0);
@@ -52,5 +53,6 @@ export {
   SheetIDAtom,
   UserAtom,
   AuthTokenAtom,
-  atomStore
+  atomStore,
+  intHelper
 };

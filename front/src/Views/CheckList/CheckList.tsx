@@ -1,13 +1,13 @@
 import { useAtom } from "jotai";
 import React, { Fragment, useEffect, useState } from "react";
-import { heightAtom, widthAtom } from "../../Atoms";
+import { AuthTokenAtom, heightAtom, widthAtom } from "../../Atoms";
 import { CheckListElement } from "./Layout/CheckListElement/CheckListElement";
 import { useFetchTasks } from "./Logic/useFetchTasks";
 import { submitTask } from "./Logic/submitTask";
 import { deleteTask } from "./Logic/deleteTask";
 import deleteIcon from "../../assets/Icons/delete.png";
 import { MultInput } from "./Layout/MultInput/MultInput";
-import { BACKEND_ATOM, UserAtom } from "../../Atoms";
+import { BACKEND_ATOM, UserAtom, intHelper } from "../../Atoms";
 
 let taskArrayType: {
   id: number;
@@ -23,16 +23,38 @@ let taskArrayType: {
 const CheckList: React.FC = () => {
   const fetchedTasks = useFetchTasks();
   const [taskArray, setTaskArray] = useState(taskArrayType);
+  const [taskID, setTaskID] = useState(0);
   const [width] = useAtom(widthAtom);
   const [height] = useAtom(heightAtom);
   const pageStyle = { minHeight: height - 56, minWidth: width };
   const [BACKEND] = useAtom(BACKEND_ATOM);
   const [user] = useAtom(UserAtom);
+  const [id] = useAtom(intHelper);
   const creatorID = user.id;
 
   useEffect(() => {
     setTaskArray(fetchedTasks);
   }, [fetchedTasks]);
+
+  useEffect(() => {
+    if (id === 0) {
+      return;
+    } else {
+      setTaskArray((prevState) =>
+        prevState.map((obj) => {
+          if (obj.id === taskID) {
+            console.log(obj);
+            return { ...obj, id: id };
+            // Create new object with new ID
+          }
+          return obj;
+        })
+      );
+    }
+
+    console.log(id);
+    console.log(taskArray);
+  }, [id]);
 
   const submitHandler = (
     taskName: string,
@@ -40,13 +62,16 @@ const CheckList: React.FC = () => {
     deadline: number,
     priority: string
   ) => {
-    console.log(owner);
-
     submitTask(taskName, deadline, owner, priority, creatorID, BACKEND);
-    taskArray === undefined || taskArray === null // checking if task array is undefined(empty)
-      ? setTaskArray([
+    const id = Math.random() * 1000;
+    setTaskID(id);
+    // checking if task array is undefined(empty) or null
+    taskArray === undefined || taskArray === null
+      ? // if it is, we push an array into it
+
+        setTaskArray([
           {
-            id: Math.random() * 1000,
+            id,
             task: taskName,
             isChecked: false,
             isDeleted: false,
@@ -55,24 +80,12 @@ const CheckList: React.FC = () => {
             creatorID,
             priority,
           },
-        ]) // if it is, we push an array into it
-      : // : setTaskArray([
-        //     {
-        //       id: Math.random() * 1000,
-        //       task: taskName,
-        //       isChecked: false,
-        //       isDeleted: false,
-        //       deadline,
-        //       owner,
-        //       creatorID,
-        //       priority,
-        //     },
-        //   ]); // if it is not, we update the state with a arrow function
-
+        ])
+      : // if it is not, we update the state with a arrow function
         setTaskArray((prevState) => [
           ...prevState,
           {
-            id: Math.random() * 1000,
+            id,
             task: taskName,
             isChecked: false,
             isDeleted: false,
@@ -81,7 +94,8 @@ const CheckList: React.FC = () => {
             creatorID,
             priority,
           },
-        ]); // if it is not, we update the state with a arrow function
+        ]);
+    console.log(taskArray);
   };
 
   const onDelete = (id: number, isDeleted: boolean) => {

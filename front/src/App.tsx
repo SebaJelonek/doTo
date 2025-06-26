@@ -10,6 +10,7 @@ import { UserAtom, atomStore } from "./Atoms";
 
 function App() {
   const [id, setId] = useState(atomStore.get(UserAtom).id);
+  console.log("id form app", id);
 
   return (
     <div className="App">

@@ -23,7 +23,6 @@ func GetTask(dbConnection *sql.DB) http.HandlerFunc {
 
 		if len(authToken) > 3 {
 			userID = jwt.Decode(authToken)
-			log.Println("authToken", authToken)
 		} else {
 			userID = jwt.Decode(sessionToken.Value)
 		}

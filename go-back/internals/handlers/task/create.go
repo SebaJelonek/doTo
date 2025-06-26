@@ -3,9 +3,9 @@ package tasks
 import (
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -37,7 +37,7 @@ func AddTask(dbConnection *sql.DB) http.HandlerFunc {
 		// method := r.Method
 		if method == "POST" {
 			var task NewTask
-
+			var taskID int
 			err := json.NewDecoder(r.Body).Decode(&task)
 			if err != nil {
 				http.Error(w, "Wrong JSON format", 422)
@@ -60,25 +60,24 @@ func AddTask(dbConnection *sql.DB) http.HandlerFunc {
 			}
 			log.Println("owner", ownerID)
 			log.Println("creator", task.Creator)
-			result, err := dbConnection.Exec("INSERT INTO tasks (creator, owner, start_time, name, dead_line, priority) VALUES ($1, $2, $3, $4, $5, $6)", task.Creator, ownerID, time.Now().Local().UnixMilli(), task.Name, task.DeadLine, task.Priority)
+
+			err = dbConnection.QueryRow(
+				"INSERT INTO tasks (creator, owner, start_time, name, dead_line, priority) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id",
+				task.Creator, ownerID, time.Now().Local().UnixMilli(), task.Name, task.DeadLine, task.Priority).Scan(&taskID)
+
 			if err != nil {
 				http.Error(w, "Query to DB failed", 500)
 				log.Println("INSERT error: ", err)
 				return
 			}
 
-			affected, err := result.RowsAffected()
-			if err != nil {
-				http.Error(w, "no rows affected", 500)
-				log.Println("AFFECTED error: ", err)
-				return
-			}
-
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(200)
+
 			json.NewEncoder(w).Encode(map[string]string{
-				"message":       "Task added successfully",
-				"rows_affected": fmt.Sprintf("%d", affected), // convert int64 to string
+				"message": "Task added successfully",
+				"taskID":  strconv.Itoa(taskID), // convert int64 to string
+
 			})
 		}
 		// else if method == "GET" {

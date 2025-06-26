@@ -25,10 +25,11 @@ func StartServer(dbConnection *sql.DB) {
 	http.HandleFunc("/api/tasks", middleware.Cors(middleware.Auth(dbConnection, tasks.GetTask(dbConnection))))
 	http.HandleFunc("/api/task", middleware.Cors(middleware.Auth(dbConnection, tasks.AddTask(dbConnection))))             //create task
 	http.HandleFunc("/api/finish-task", middleware.Cors(middleware.Auth(dbConnection, tasks.CompleteTask(dbConnection)))) //complete task
-	http.HandleFunc("/api/login", middleware.Cors(middleware.Auth(dbConnection, users.Login(dbConnection))))
-	http.HandleFunc("/api/user", middleware.Cors(middleware.Auth(dbConnection, users.Add(dbConnection))))
-	http.HandleFunc("/verify", middleware.Cors(middleware.Auth(dbConnection, users.Verify(dbConnection))))
+	http.HandleFunc("/verify", middleware.Cors(users.Verify(dbConnection)))
 	http.HandleFunc("/api/delete-task", middleware.Cors(middleware.Auth(dbConnection, tasks.DeleteTask(dbConnection)))) //delete task
+	http.HandleFunc("/api/login", middleware.Cors(users.Login(dbConnection)))
+	http.HandleFunc("/api/user", middleware.Cors(users.Add(dbConnection)))
+	http.HandleFunc("/favicon.ico", middleware.Cors(handlers.Favicon))
 
 	//always last
 	http.HandleFunc("/", middleware.Cors(middleware.Auth(dbConnection, handlers.Root(dbConnection))))

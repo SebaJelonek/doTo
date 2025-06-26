@@ -9,6 +9,7 @@ import {
   sheetEmptyAtom,
   SheetIDAtom,
   shoppingListAtom,
+  UserAtom,
   widthAtom,
 } from "../../Atoms";
 import { useFetchShoppingList } from "./Logic/useFetchShoppingList";
@@ -22,9 +23,9 @@ const ShoppingList: React.FC = () => {
   const [sheetEmpty] = useAtom(sheetEmptyAtom);
   const [width] = useAtom(widthAtom);
   const [height] = useAtom(heightAtom);
+  const [user] = useAtom(UserAtom);
 
-  // useFetchShoppingList();
-  console.log(authToken);
+  // useFetchShoppingList()
 
   const onSubmitHandler = (inputValue: string) =>
     submitItem(inputValue, sheetId, BACKEND, setShoppingList);

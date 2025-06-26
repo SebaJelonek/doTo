@@ -36,16 +36,17 @@ export const useFetch = (
   
   
   let header :HeadersInit
+
   if (atomStore.get(AuthTokenAtom)) {
-    console.log(atomStore.get(AuthTokenAtom))
     header = { 
       "Content-Type": "application/json",
       "Authorization": `Bearer ${atomStore.get(AuthTokenAtom)}`,
     }
   } else {
     header = {"Content-Type": "application/json",}
-    
   }
+
+
   if (method === "GET") {
     const fetchData = async () => {
       const response = await fetch(url, {
@@ -57,7 +58,15 @@ export const useFetch = (
       
 
       
-      
+      if (response.headers.get("Content-Type")?.includes("json")) {
+        console.log(response.headers.get("Authorization"));
+        
+        atomStore.set(AuthTokenAtom, response.headers.get("Authorization")?.split(" ")[1])        
+        // return response;
+      }
+      if (response.headers.get("Content-Type")?.includes("text")) {
+        // return response.text();
+      }
       return [response.json(), response.status];
     };
 
@@ -75,6 +84,8 @@ export const useFetch = (
         
       
       if (response.headers.get("Content-Type")?.includes("json")) {
+        console.log(response.headers.get("Authorization"));
+        
         atomStore.set(AuthTokenAtom, response.headers.get("Authorization")?.split(" ")[1])        
         return response;
       }

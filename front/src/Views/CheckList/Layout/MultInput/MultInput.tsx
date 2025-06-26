@@ -54,6 +54,7 @@ export const MultInput: React.FC<Props> = ({ onSubmit }) => {
     }
 
     onSubmit(taskName, owner, Date.parse(deadLine), priorityLevel);
+
     setTaskName("");
     setOwner("");
     setDeadLine("");

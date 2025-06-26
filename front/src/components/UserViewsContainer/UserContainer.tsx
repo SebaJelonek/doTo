@@ -11,12 +11,11 @@ interface Props {
 }
 
 export const UserContainer: React.FC<Props> = ({ setId }) => {
-  const [user] = useAtom(UserAtom);
+  const [user, setUser] = useAtom(UserAtom);
   const [marginLeft] = useAtom(marginLeftAtom);
   const { marginLeftOffset } = useSpring({
     marginLeftOffset: marginLeft,
   });
-
   const [BACKEND] = useAtom(BACKEND_ATOM);
 
   useEffect(() => {
@@ -28,8 +27,7 @@ export const UserContainer: React.FC<Props> = ({ setId }) => {
     response?.then((res: any) => {
       if (res !== undefined) {
         res[0].then((val: any) => {
-          setId(val.id);
-          console.log("co? ", val.id);
+          setUser(val);
         });
       }
     });

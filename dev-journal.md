@@ -263,6 +263,52 @@ so the usage of imported changed
 from: jwt.GenerateJWT
 to: jwt.Generate
 
+### 🗓️ **June 25, 2025 — Day 15: updating id of the task element after submiting it**
+
+🚧 Struggles & Debugging
+
+**Today's Focus:** Deep dive into React state management with Jotai, specifically handling asynchronous updates and immutable array/object manipulation.
+
+**Key Learning/Problem Solved:**
+
+Spent a significant chunk of time wrestling with a classic React state update timing issue, particularly when dealing with an array of objects where individual object properties (like `id`) need to be updated.
+
+**The Problem:**
+
+I have a `submitHandler` that:
+
+1.  Initiates a backend call (`submitTask`).
+2.  Generates a _temporary_ `id` (e.g., `Math.random() * 1000`).
+3.  Sets a `taskID` state variable (which is meant to hold this temporary ID for later lookup).
+4.  Adds a new task object to a `taskArray` state.
+
+The core issue was that when adding the new task object to `taskArray`, when updating two states at once they are scheduled and when the useEffect is triggered by change of one of the sates the state used inside the useEffect is different to the state which was used inside the handler.
+
+setTaskID(math.random())
+setArray((prevstate)=>[...prevstate, {id:taskID, name:""}])
+
+useEffect(()=>{logic based on taskID does not work because its different value},[taskID])
+
+Later, in a `useEffect` (triggered by the _permanent_ ID received from the server), I was trying to find this task in `taskArray` using the `taskID` state variable. Because the `taskID` within the object didn't match the `taskID` state variable's _then-current_ value (which had just been updated), the object wasn't being found and mutated correctly.
+
+**The Solution:**
+
+The key was to ensure that the _newly generated temporary ID_ is used consistently at the point of creation:
+
+1.  **Generate the temporary ID into a `const` local variable** _before_ any `setState` calls related to it. This ensures the value is immediately available and correct.
+2.  **Use this `const` variable directly** when creating the `newTask` object (for its `id` property).
+3.  **Immediately set the `taskID` state variable** _to this same `const` variable's value_. This correctly updates the `taskID` state for future `useEffect` runs, ensuring it holds the temporary ID of the most recently added pending task.
+
+By doing this, the `id` property of the task object in `taskArray` accurately reflects the `taskID` state variable when the `useEffect` later attempts to match and update it with the permanent ID from the backend.
+
+**Reflection:**
+
+This reinforces the critical importance of understanding:
+
+- **Asynchronous nature of `setState`:** State updates are not immediate.
+- **Closures in JavaScript/React:** Variables captured by a function (like a `useEffect` callback) hold the values they had when the function was created, not necessarily their latest values, unless explicitly included in dependency arrays.
+- **Immutability:** Consistent immutable updates (`.map()`, spread syntax `...`) are essential for React's efficiency and avoiding subtle bugs.
+
 ## 🔚 Summary of Features Completed
 
 | Feature                      | Status            |

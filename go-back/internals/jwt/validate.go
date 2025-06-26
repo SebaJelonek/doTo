@@ -17,7 +17,9 @@ func Validate(jwt string, tokenType string) (bool, int) {
 	if len(jwt) < 3 {
 		return false, 0
 	}
+
 	jwt = strings.TrimPrefix(jwt, "Bearer ")
+
 	encoder := base64.URLEncoding.WithPadding(base64.NoPadding)
 	tokens := strings.Split(jwt, ".")
 	headerStringEncoded := tokens[0]
@@ -55,7 +57,7 @@ func Validate(jwt string, tokenType string) (bool, int) {
 	}
 
 	if header.Alg == "HS256" {
-		if payload.Expiration < time.Now().UnixMilli() {
+		if payload.Expiration < time.Now().UnixMilli() { //token expired
 			userID = 0
 			return false, userID
 		} else {
@@ -80,7 +82,7 @@ func Validate(jwt string, tokenType string) (bool, int) {
 			return isValid, userID
 		}
 
-	} else {
+	} else { //wrong algo
 		userID = 0
 		return false, userID
 	}

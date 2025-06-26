@@ -12,29 +12,32 @@ import (
 func Auth(dbConnection *sql.DB, handler http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var userName string
-		println("Auth for ", r.URL.Path)
+		println("🟠 Auth running for ", r.URL.Path)
 		authToken := r.Header.Get("Authorization")
-		sessionToken, err := r.Cookie("jwt")
+		sessionCookie, err := r.Cookie("jwt")
 		if err != nil {
+			log.Println("cookie error", err)
 			http.Error(w, "Please log in", 403)
-			log.Println(err)
+			return
 		}
 
-		isAuthValid, userID := jwt.Validate(authToken, "auth")
+		sessionToken := sessionCookie.Value
 
+		isAuthValid, userID := jwt.Validate(authToken, "auth")
 		if isAuthValid {
 			err := dbConnection.QueryRow("SELECT name FROM users WHERE id = $1", userID).Scan(&userName)
 			if err != nil {
 				http.Error(w, "something went wrong", 500)
+				log.Println("is Auth Valid query", err)
+				return
 			}
 
-			w.Header().Set("Authorization", authToken)
+			// w.Header().Set("Authorization", authToken)
 			handler(w, r)
 
-		} else {
-			isSessionValid, userID := jwt.Validate(sessionToken.Value, "sessions")
+		} else { //auth is invalid
+			isSessionValid, userID := jwt.Validate(sessionToken, "sessions")
 			issuedAt := time.Now().UnixMilli()
-
 			var payload = jwt.Payload{
 				UserID:     userID,
 				IssuedAt:   issuedAt,
@@ -46,6 +49,8 @@ func Auth(dbConnection *sql.DB, handler http.HandlerFunc) http.HandlerFunc {
 				err := dbConnection.QueryRow("SELECT name FROM users WHERE id = $1", userID).Scan(&userName)
 				if err != nil {
 					http.Error(w, "something went wrong", 500)
+					log.Println("is Session Valid query", err)
+					return
 				}
 
 				w.Header().Set("Authorization", "Bearer "+jwt)
@@ -53,6 +58,8 @@ func Auth(dbConnection *sql.DB, handler http.HandlerFunc) http.HandlerFunc {
 				handler(w, r)
 			} else {
 				http.Error(w, "Session expired, please log in again", 403)
+				log.Println("session is expired", err)
+				return
 				/*
 					for now...
 					later i will check the the exp date

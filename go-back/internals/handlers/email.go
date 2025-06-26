@@ -98,10 +98,11 @@ func SendVerificationEmail(email string, token string) error {
 		</html>`, token),
 	}
 	var pass = os.Getenv("EMAIL_PASSWORD")
+	var emailLogin = os.Getenv("EMAIL_LOGIN")
 	var brevo = EmailConfig{
 		SMTPHost: "smtp-relay.brevo.com",
 		SMTPPort: "587",
-		Email:    "8f6f36001@smtp-brevo.com",
+		Email:    emailLogin,
 		Password: pass,
 	}
 
