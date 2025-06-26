@@ -79,7 +79,6 @@ func Login(dbConnection *sql.DB) http.HandlerFunc {
 				Name:     "jwt",
 				Value:    jwtSession,
 				Path:     "/",
-				Domain:   "localhost",
 				Expires:  sessionExpireDate,
 				HttpOnly: true,
 				Secure:   false,

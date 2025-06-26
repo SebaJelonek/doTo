@@ -3,6 +3,7 @@ package connection
 import (
 	"database/sql"
 	"log"
+	"os"
 )
 
 const (
@@ -20,7 +21,7 @@ func CreateConnection() *sql.DB {
 	// host, port, user, password, dbname)
 
 	// Supabase connection string
-	connStr := "postgresql://postgres.nzkeykmnxyskykpccvxl:hn5trc6e@aws-0-eu-central-1.pooler.supabase.com:5432/postgres"
+	connStr := os.Getenv("DATABASE_URI")
 
 	// Connect to the database
 	db, err := sql.Open("postgres", connStr)
