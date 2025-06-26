@@ -18,11 +18,11 @@ export const submitItem: SubmitFunctionInterface['submitFunction'] = (
   const newItem = { item, sheetId };
 
   const response = useFetch('POST', `${BACKEND}/api/item/new`, newItem);
-  response?.then(({ status, _id }) => {
-    if (status === 200) {
+  response?.then((res:any) => {
+    if (res.status === 200) {
       setShoppingList((prevState: (typeof newItem)[]) => [
         ...prevState,
-        { id: _id.toString(), item },
+        { id: res._id.toString(), item },
       ]);
     }
   });

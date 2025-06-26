@@ -18,9 +18,9 @@ export const useFetchShoppingList = () => {
   useEffect(() => {
     try {
       if (response !== undefined)
-        response.then(({ status, message, items }) => {
-          if (status === 200 && items.length > 0) {
-            setShoppingList(items);
+        response.then((res: any) => {
+          if (res.status === 200 && res.items.length > 0) {
+            setShoppingList(res.items);
             setSheetEmpty(false);
           } else {
             setSheetEmpty(true);

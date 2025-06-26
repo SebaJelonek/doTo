@@ -28,7 +28,7 @@ export const deleteShoppingItem: DeleteShoppingItemInterface['deleteShoppingItem
       );
     }
     const response = useFetch('POST', `${BACKEND}/api/item/delete`, {
-      _id: parseInt(sheetId),
+      id: parseInt(sheetId),
       itemId,
     });
     response?.then((res) => {
