@@ -26,7 +26,7 @@ const user: {id: number, name: string, email: string} =
 const UserAtom = atom(user)
 const AuthTokenAtom = atom<string | undefined>(undefined)
 const SheetIDAtom = atom('63da5d9e88970ccfe148df67'); // production
-const BACKEND_ATOM = atom('https://doto-backend.onrender.com'); // production
+const BACKEND_ATOM = atom('http://localhost:3000'); // production
 
 // const SheetIDAtom = atom('63610d3bca983db268d6c2bf'); // dev
 // const BACKEND_ATOM = atom('https://dotoback.onrender.com'); // dev
