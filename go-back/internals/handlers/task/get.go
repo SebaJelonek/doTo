@@ -19,6 +19,7 @@ func GetTask(dbConnection *sql.DB) http.HandlerFunc {
 		if err != nil {
 			log.Println("session is not there")
 			http.Error(w, "Session expired please log in", 403)
+			return
 		}
 
 		if len(authToken) > 3 {
@@ -46,8 +47,9 @@ func GetTask(dbConnection *sql.DB) http.HandlerFunc {
 			userID)
 
 		if err != nil {
-			http.Error(w, "Query failed", 500)
-			log.Println("query error ", err)
+			http.Error(w, "Internal server error", 500)
+			log.Println("tasks - get - query - error ", err)
+			return
 		}
 
 		defer rows.Close()
@@ -76,7 +78,9 @@ func GetTask(dbConnection *sql.DB) http.HandlerFunc {
 				&task.Owner,
 			)
 			if err != nil {
-				log.Println("scan error ", err)
+				log.Println("tasks - get - scan error", err)
+				http.Error(w, "Internal server error", 500)
+
 				return
 			}
 			tasks = append(tasks, task)

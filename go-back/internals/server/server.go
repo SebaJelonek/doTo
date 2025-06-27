@@ -8,6 +8,7 @@ import (
 	"os"
 
 	handlers "github.com/SebaJelonek/doTo/internals/handlers"
+	"github.com/SebaJelonek/doTo/internals/handlers/items"
 	tasks "github.com/SebaJelonek/doTo/internals/handlers/task"
 	users "github.com/SebaJelonek/doTo/internals/handlers/user"
 	middleware "github.com/SebaJelonek/doTo/internals/middleware"
@@ -21,7 +22,7 @@ func StartServer(dbConnection *sql.DB) {
 		log.Println(err)
 	}
 
-	http.HandleFunc("/api/add-item", middleware.Cors(middleware.Auth(dbConnection, handlers.AddItem(dbConnection))))
+	http.HandleFunc("/api/item", middleware.Cors(middleware.Auth(dbConnection, items.Create(dbConnection))))
 	http.HandleFunc("/api/tasks", middleware.Cors(middleware.Auth(dbConnection, tasks.GetTask(dbConnection))))
 	http.HandleFunc("/api/task", middleware.Cors(middleware.Auth(dbConnection, tasks.AddTask(dbConnection))))             //create task
 	http.HandleFunc("/api/finish-task", middleware.Cors(middleware.Auth(dbConnection, tasks.CompleteTask(dbConnection)))) //complete task
