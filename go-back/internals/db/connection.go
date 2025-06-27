@@ -2,8 +2,8 @@ package connection
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
-	"os"
 )
 
 const (
@@ -17,14 +17,14 @@ const (
 var DB *sql.DB
 
 func CreateConnection() *sql.DB {
-	// psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
-	// host, port, user, password, dbname)
-
+	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
+		host, port, user, password, dbname)
+	log.Println(psqlInfo)
 	// Supabase connection string
-	connStr := os.Getenv("DATABASE_URI")
+	// connStr := os.Getenv("DATABASE_URI")
 
 	// Connect to the database
-	db, err := sql.Open("postgres", connStr)
+	db, err := sql.Open("postgres", psqlInfo)
 	if err != nil {
 		log.Fatalf("Unable to connect to database: %v", err)
 	}
