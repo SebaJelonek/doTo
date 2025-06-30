@@ -18,14 +18,21 @@ type DBUser struct {
 func Session(dbConnection *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var user DBUser
-		authToken := r.Header.Get("Authorization")
-		id := jwt.DecodeUserID(authToken)
+		sessionCookie, err := r.Cookie("jwt")
+		if err != nil {
+			log.Println("cookie error", err)
+			http.Error(w, "Please log in", 403)
+			return
+		}
+
+		sessionToken := sessionCookie.Value
+		id := jwt.DecodeUserID(sessionToken)
 
 		log.Println("id", id)
 
 		w.Header().Set("Content-Type", "application/json")
 
-		err := dbConnection.QueryRow("SELECT id, name, email FROM USERS WHERE id = $1", id).Scan(&user.ID, &user.Name, &user.Email)
+		err = dbConnection.QueryRow("SELECT id, name, email FROM USERS WHERE id = $1", id).Scan(&user.ID, &user.Name, &user.Email)
 		if err != nil {
 			log.Fatal("user - session - query - error: ", err)
 			http.Error(w, "Internal server error", 500)

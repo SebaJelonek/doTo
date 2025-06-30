@@ -24,7 +24,7 @@ func StartServer(dbConnection *sql.DB) {
 
 	http.HandleFunc("/api/item", middleware.Cors(middleware.Auth(dbConnection, items.Create(dbConnection))))
 	http.HandleFunc("/api/items", middleware.Cors(middleware.Auth(dbConnection, items.Get(dbConnection))))
-	// http.HandleFunc("/api/delete", middleware.Cors(middleware.Auth(dbConnection, items.Get(dbConnection))))
+	http.HandleFunc("/api/delete/", middleware.Cors(middleware.Auth(dbConnection, items.Delete(dbConnection))))
 
 	http.HandleFunc("/api/task", middleware.Cors(middleware.Auth(dbConnection, tasks.Create(dbConnection))))          //create task
 	http.HandleFunc("/api/tasks", middleware.Cors(middleware.Auth(dbConnection, tasks.Get(dbConnection))))            //get tasks
