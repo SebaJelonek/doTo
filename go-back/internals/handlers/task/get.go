@@ -14,23 +14,7 @@ func Get(dbConnection *sql.DB) http.HandlerFunc {
 		var tasks []Task
 		var userID int
 		authToken := r.Header.Get("Authorization")
-<<<<<<< HEAD
-		sessionToken, err := r.Cookie("jwt")
-
-		if err != nil {
-			log.Println("session is not there")
-			http.Error(w, "Session expired please log in", 403)
-			return
-		}
-
-		if len(authToken) > 3 {
-			userID = jwt.Decode(authToken)
-		} else {
-			userID = jwt.Decode(sessionToken.Value)
-		}
-=======
 		userID = jwt.DecodeUserID(authToken)
->>>>>>> local-dev
 
 		rows, err := dbConnection.Query(`
 		SELECT 
