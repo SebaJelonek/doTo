@@ -80,10 +80,9 @@ func Login(dbConnection *sql.DB) http.HandlerFunc {
 				Value:    jwtSession,
 				Path:     "/",
 				Expires:  sessionExpireDate,
-				Domain:   "localhost",
 				HttpOnly: true,
-				Secure:   false,
-				SameSite: http.SameSiteLaxMode,
+				Secure:   true,
+				SameSite: http.SameSiteNoneMode,
 			}
 
 			http.SetCookie(w, jwtCookie)
