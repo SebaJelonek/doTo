@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useAtom } from "jotai";
 import InputField from "../../components/Form/InputField";
 import ShoppingListContainer from "./Layout/ShoppingListContainer/ShoppingListContainer";
@@ -6,37 +6,59 @@ import {
   AuthTokenAtom,
   BACKEND_ATOM,
   heightAtom,
-  sheetEmptyAtom,
-  SheetIDAtom,
   shoppingListAtom,
   UserAtom,
   widthAtom,
 } from "../../Atoms";
 import { useFetchShoppingList } from "./Logic/useFetchShoppingList";
 import { submitItem } from "./Logic/submitShoppingItem";
+import { useFetch } from "../../Fetch";
 
 const ShoppingList: React.FC = () => {
   const [BACKEND] = useAtom(BACKEND_ATOM);
   const [authToken] = useAtom(AuthTokenAtom);
-  const [sheetId] = useAtom(SheetIDAtom);
   const [shoppingList, setShoppingList] = useAtom(shoppingListAtom);
-  const [sheetEmpty] = useAtom(sheetEmptyAtom);
   const [width] = useAtom(widthAtom);
   const [height] = useAtom(heightAtom);
   const [user] = useAtom(UserAtom);
 
-  // useFetchShoppingList()
+  // useFetchShoppingList();
+  // const url = useMemo(() => `${BACKEND}/api/items`, [BACKEND]);
 
-  const onSubmitHandler = (inputValue: string) =>
-    submitItem(inputValue, sheetId, BACKEND, setShoppingList);
+  useEffect(() => {
+    console.log("render");
+
+    const response = useFetch("GET", `${BACKEND}/api/items`);
+    try {
+      if (response !== undefined)
+        response.then((res: any) => {
+          if (res[1] === 200) {
+            console.log("items ", res[0]);
+            res[0].then((value: any) => {
+              console.log("value if", value);
+              setShoppingList(value);
+              console.log("shopping list state", shoppingList);
+            });
+          } else {
+            console.log("no nic");
+          }
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
+
+  const onSubmitHandler = (inputValue: string) => {
+    submitItem(inputValue, BACKEND, setShoppingList);
+  };
 
   return (
     <div
       className="p-8 pb-0 pt-7"
       style={{ minHeight: height - 60, minWidth: width }}
     >
-      {!sheetEmpty ? (
-        <div key={sheetId}>
+      {shoppingList.length > 0 ? (
+        <div>
           <InputField
             name="Item name"
             type="text"

@@ -5,19 +5,16 @@ interface DeleteShoppingItemInterface {
     taskId: string,
     taskList: {
       id: string;
-      item: string;
+      name: string;
     }[],
     setTaskList: (update: any) => void,
     BACKEND: string,
-    sheetId: string
   ) => void;
 }
 
 export const deleteShoppingItem: DeleteShoppingItemInterface['deleteShoppingItem'] =
-  (itemId, taskList, setTaskList, BACKEND, sheetId) => {
+  (itemId, taskList, setTaskList, BACKEND) => {
     console.log(itemId);
-    console.log(sheetId);
-
     if (taskList.length === 1) {
       setTaskList((prevState: typeof taskList) =>
         prevState.filter(({ id }) => itemId !== id)
@@ -27,10 +24,7 @@ export const deleteShoppingItem: DeleteShoppingItemInterface['deleteShoppingItem
         prevState.filter(({ id }) => itemId !== id)
       );
     }
-    const response = useFetch('POST', `${BACKEND}/api/item/delete`, {
-      id: parseInt(sheetId),
-      itemId,
-    });
+    const response = useFetch('DELETE', `${BACKEND}/api/item:${itemId}`);
     response?.then((res) => {
       console.log(res);
     });
