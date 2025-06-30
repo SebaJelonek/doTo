@@ -13,7 +13,8 @@ type DBUser struct {
 
 func Root(dbConnection *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-
+		w.WriteHeader(201)
+		return
 	}
 }
 

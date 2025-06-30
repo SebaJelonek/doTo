@@ -31,10 +31,10 @@ func StartServer(dbConnection *sql.DB) {
 	http.HandleFunc("/api/finish-task", middleware.Cors(middleware.Auth(dbConnection, tasks.Complete(dbConnection)))) //complete task
 	http.HandleFunc("/api/delete-task", middleware.Cors(middleware.Auth(dbConnection, tasks.Delete(dbConnection))))   //delete task
 
-	http.HandleFunc("/verify", middleware.Cors(users.Verify(dbConnection)))
+	http.HandleFunc("/verify", middleware.Cors(users.Verify(dbConnection))) // verification site served with html
 	http.HandleFunc("/api/login", middleware.Cors(users.Login(dbConnection)))
 	http.HandleFunc("/api/user", middleware.Cors(users.Create(dbConnection)))
-	http.HandleFunc("/", middleware.Cors(middleware.Auth(dbConnection, users.Session(dbConnection))))
+	http.HandleFunc("/api/session", middleware.Cors(middleware.Auth(dbConnection, users.Session(dbConnection))))
 
 	http.HandleFunc("/favicon.ico", middleware.Cors(handlers.Favicon))
 
