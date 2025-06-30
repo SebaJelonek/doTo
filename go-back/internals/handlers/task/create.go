@@ -30,7 +30,7 @@ type NewTask struct {
 	DeadLine int    `json:"deadline"`
 }
 
-func AddTask(dbConnection *sql.DB) http.HandlerFunc {
+func Create(dbConnection *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var method string = r.Method
 

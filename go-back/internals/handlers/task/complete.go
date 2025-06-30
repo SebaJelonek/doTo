@@ -13,7 +13,7 @@ type DoneTask struct {
 	IsDone bool `json:"checked"`
 }
 
-func CompleteTask(dbConnection *sql.DB) http.HandlerFunc {
+func Complete(dbConnection *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var task DoneTask
 

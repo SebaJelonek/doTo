@@ -24,13 +24,18 @@ func StartServer(dbConnection *sql.DB) {
 
 	http.HandleFunc("/api/item", middleware.Cors(middleware.Auth(dbConnection, items.Create(dbConnection))))
 	http.HandleFunc("/api/items", middleware.Cors(middleware.Auth(dbConnection, items.Get(dbConnection))))
-	http.HandleFunc("/api/tasks", middleware.Cors(middleware.Auth(dbConnection, tasks.GetTask(dbConnection))))
-	http.HandleFunc("/api/task", middleware.Cors(middleware.Auth(dbConnection, tasks.AddTask(dbConnection))))             //create task
-	http.HandleFunc("/api/finish-task", middleware.Cors(middleware.Auth(dbConnection, tasks.CompleteTask(dbConnection)))) //complete task
+	// http.HandleFunc("/api/delete", middleware.Cors(middleware.Auth(dbConnection, items.Get(dbConnection))))
+
+	http.HandleFunc("/api/task", middleware.Cors(middleware.Auth(dbConnection, tasks.Create(dbConnection))))          //create task
+	http.HandleFunc("/api/tasks", middleware.Cors(middleware.Auth(dbConnection, tasks.Get(dbConnection))))            //get tasks
+	http.HandleFunc("/api/finish-task", middleware.Cors(middleware.Auth(dbConnection, tasks.Complete(dbConnection)))) //complete task
+	http.HandleFunc("/api/delete-task", middleware.Cors(middleware.Auth(dbConnection, tasks.Delete(dbConnection))))   //delete task
+
 	http.HandleFunc("/verify", middleware.Cors(users.Verify(dbConnection)))
-	http.HandleFunc("/api/delete-task", middleware.Cors(middleware.Auth(dbConnection, tasks.DeleteTask(dbConnection)))) //delete task
 	http.HandleFunc("/api/login", middleware.Cors(users.Login(dbConnection)))
-	http.HandleFunc("/api/user", middleware.Cors(users.Add(dbConnection)))
+	http.HandleFunc("/api/user", middleware.Cors(users.Create(dbConnection)))
+	http.HandleFunc("/", middleware.Cors(middleware.Auth(dbConnection, users.Session(dbConnection))))
+
 	http.HandleFunc("/favicon.ico", middleware.Cors(handlers.Favicon))
 
 	//always last

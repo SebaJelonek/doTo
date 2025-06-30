@@ -12,7 +12,7 @@ type DeletedTask struct {
 	IsDeleted bool `json:"isDeleted"`
 }
 
-func DeleteTask(dbConnection *sql.DB) http.HandlerFunc {
+func Delete(dbConnection *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var deletedTask DeletedTask
 

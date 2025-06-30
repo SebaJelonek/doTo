@@ -9,24 +9,12 @@ import (
 	jwt "github.com/SebaJelonek/doTo/internals/jwt"
 )
 
-func GetTask(dbConnection *sql.DB) http.HandlerFunc {
+func Get(dbConnection *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var tasks []Task
 		var userID int
 		authToken := r.Header.Get("Authorization")
-		sessionToken, err := r.Cookie("jwt")
-
-		if err != nil {
-			log.Println("session is not there")
-			http.Error(w, "Session expired please log in", 403)
-			return
-		}
-
-		if len(authToken) > 3 {
-			userID = jwt.Decode(authToken)
-		} else {
-			userID = jwt.Decode(sessionToken.Value)
-		}
+		userID = jwt.DecodeUserID(authToken)
 
 		rows, err := dbConnection.Query(`
 		SELECT 
