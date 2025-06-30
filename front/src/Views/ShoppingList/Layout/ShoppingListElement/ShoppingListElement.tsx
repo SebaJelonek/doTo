@@ -51,7 +51,11 @@ const ShoppingListElement: React.FC<Props> = ({
   useEffect(() => {
     if (deleted) {
       setTimeout(() => {
-        id !== null && deleteShoppingItem(id);
+        // id !== null && deleteShoppingItem(id);
+        if (id !== null) {
+          console.log("delete");
+          deleteShoppingItem(id);
+        }
       }, 900);
     }
   }, [deleted]);

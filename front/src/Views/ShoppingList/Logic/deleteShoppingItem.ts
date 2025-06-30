@@ -24,8 +24,9 @@ export const deleteShoppingItem: DeleteShoppingItemInterface['deleteShoppingItem
         prevState.filter(({ id }) => itemId !== id)
       );
     }
-    const response = useFetch('DELETE', `${BACKEND}/api/item:${itemId}`);
-    response?.then((res) => {
-      console.log(res);
+    // const response = useFetch('DELETE', `${BACKEND}/api/items/${itemId}`); correct way
+    const response = useFetch('GET', `${BACKEND}/api/delete/${itemId}`);
+    response?.then((res:any) => {
+      console.log(res[0]);
     });
   };
