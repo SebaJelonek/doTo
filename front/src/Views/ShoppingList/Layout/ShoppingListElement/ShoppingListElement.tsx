@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { useSpring, animated } from '@react-spring/web';
-import { useDrag } from '@use-gesture/react';
+import React, { useEffect, useState } from "react";
+import { useSpring, animated } from "@react-spring/web";
+import { useDrag } from "@use-gesture/react";
 
 interface Props {
   id: string | null;
@@ -51,7 +51,11 @@ const ShoppingListElement: React.FC<Props> = ({
   useEffect(() => {
     if (deleted) {
       setTimeout(() => {
-        id !== null && deleteShoppingItem(id);
+        // id !== null && deleteShoppingItem(id);
+        if (id !== null) {
+          console.log("delete");
+          deleteShoppingItem(id);
+        }
       }, 900);
     }
   }, [deleted]);
@@ -76,12 +80,12 @@ const ShoppingListElement: React.FC<Props> = ({
       <div>
         <div>
           <animated.div
-            className='relative z-10 flex h-20 w-64 items-center justify-center rounded-2xl bg-slate-200'
+            className="relative z-10 flex h-20 w-64 items-center justify-center rounded-2xl bg-slate-200"
             {...bind()}
-            style={{ x, height, touchAction: 'none' }}
+            style={{ x, height, touchAction: "none" }}
           >
             <animated.h3
-              className='z-20 touch-none select-none p-1 text-lg text-cyan-600'
+              className="z-20 touch-none select-none p-1 text-lg text-cyan-600"
               {...bind()}
             >
               {item}
@@ -91,7 +95,7 @@ const ShoppingListElement: React.FC<Props> = ({
       </div>
 
       <animated.h3
-        className='relative bottom-11 select-none pr-3 text-right text-2xl text-cyan-200'
+        className="relative bottom-11 select-none pr-3 text-right text-2xl text-cyan-200"
         style={{ x: gone ? end : 0 }}
       >
         Delete

@@ -1,6 +1,6 @@
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
-import { BACKEND_ATOM, SheetIDAtom } from "../../../Atoms";
+import { BACKEND_ATOM } from "../../../Atoms";
 import { useFetch } from "../../../Fetch";
 
 interface Tasks {
@@ -42,7 +42,6 @@ const initialTaskArray = [
 export function useFetchTasks() {
   const [tasks, setTasks] = useState<Tasks["tasks"]>();
   const [BACKEND] = useAtom(BACKEND_ATOM);
-  const [sheetId] = useAtom(SheetIDAtom);
 
   useEffect(() => {
     useFetch("GET", `${BACKEND}/api/tasks`)?.then((res: any) => {

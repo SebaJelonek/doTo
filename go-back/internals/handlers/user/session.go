@@ -1,4 +1,4 @@
-package handlers
+package users
 
 import (
 	"database/sql"
@@ -15,35 +15,35 @@ type DBUser struct {
 	Email string `json:"email"`
 }
 
-func Root(dbConnection *sql.DB) http.HandlerFunc {
+func Session(dbConnection *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var user DBUser
-		cookie, err := r.Cookie("jwt")
+		sessionCookie, err := r.Cookie("jwt")
 		if err != nil {
-			http.Error(w, "Session expired please log in", 401)
+			log.Println("cookie error", err)
+			http.Error(w, "Please log in", 403)
+			return
 		}
-		var id = jwt.Decode(cookie.Value)
-		log.Println("root id", id)
+
+		sessionToken := sessionCookie.Value
+		id := jwt.DecodeUserID(sessionToken)
+
+		log.Println("id", id)
+
 		w.Header().Set("Content-Type", "application/json")
+
 		err = dbConnection.QueryRow("SELECT id, name, email FROM USERS WHERE id = $1", id).Scan(&user.ID, &user.Name, &user.Email)
 		if err != nil {
-			log.Fatal("error: ", err)
+			log.Fatal("user - session - query - error: ", err)
+			http.Error(w, "Internal server error", 500)
+			return
 		}
 
 		err = json.NewEncoder(w).Encode(user)
 		if err != nil {
-			http.Error(w, "Error encoding JSON", 500)
-			log.Println("JSON encode error: ", err)
+			http.Error(w, "Internal server error", 500)
+			log.Println("user - session - JSON encode error:", err)
 			return
 		}
 	}
 }
-
-// i went on a break i just created the root.go
-
-// i have package handlers there
-
-// now i need to create the function
-
-// so func nameoffunction
-// so this function has to return http.

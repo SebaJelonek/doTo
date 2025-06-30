@@ -1,19 +1,18 @@
-import React from 'react';
-import { useTransition, animated } from '@react-spring/web';
-import { useAtom } from 'jotai';
-import { BACKEND_ATOM, SheetIDAtom, shoppingListAtom } from '../../../../Atoms';
-import ShoppingListElement from '../ShoppingListElement/ShoppingListElement';
-import { deleteShoppingItem as deleteShoppingItemFunction } from '../../Logic/deleteShoppingItem';
+import React from "react";
+import { useTransition, animated } from "@react-spring/web";
+import { useAtom } from "jotai";
+import { BACKEND_ATOM, shoppingListAtom } from "../../../../Atoms";
+import ShoppingListElement from "../ShoppingListElement/ShoppingListElement";
+import { deleteShoppingItem as deleteShoppingItemFunction } from "../../Logic/deleteShoppingItem";
 
 interface Props {
   list: {
     id: string;
-    item: string;
+    name: string;
   }[];
 }
 
 const ShoppingListContainer: React.FC<Props> = ({ list }) => {
-  const [sheetId] = useAtom(SheetIDAtom);
   const [shoppingList, setShoppingList] = useAtom(shoppingListAtom);
   const [BACKEND] = useAtom(BACKEND_ATOM);
 
@@ -24,25 +23,21 @@ const ShoppingListContainer: React.FC<Props> = ({ list }) => {
   });
 
   const deleteShoppingItem = (taskId: string) =>
-    deleteShoppingItemFunction(
-      taskId,
-      shoppingList,
-      setShoppingList,
-      BACKEND,
-      sheetId
-    );
+    deleteShoppingItemFunction(taskId, shoppingList, setShoppingList, BACKEND);
 
   return (
-    <div className='flex flex-col items-center'>
-      {transitions((styles, { id, item }) => (
-        <animated.div style={{ ...styles, position: 'relative' }} key={id}>
-          <ShoppingListElement
-            item={item}
-            id={id}
-            deleteShoppingItem={deleteShoppingItem}
-          />
-        </animated.div>
-      ))}
+    <div className="flex flex-col items-center">
+      {transitions((styles, { id, name }) => {
+        return (
+          <animated.div style={{ ...styles, position: "relative" }} key={id}>
+            <ShoppingListElement
+              item={name}
+              id={id}
+              deleteShoppingItem={deleteShoppingItem}
+            />
+          </animated.div>
+        );
+      })}
     </div>
   );
 };

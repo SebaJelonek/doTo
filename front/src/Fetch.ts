@@ -1,7 +1,7 @@
 import { atomStore, AuthTokenAtom } from "./Atoms";
 
 export const useFetch = (
-  method: "GET" | "POST" | "PUT",
+  method: "GET" | "POST" | "PUT" | "DELETE",
   url: string,
   body?:
     | { id: number }

@@ -8,7 +8,7 @@ const tasks = window.localStorage.getItem('taskList')?.split(',');
 
 const newTasks = [1, 2, 3, 4]
 
-const initialData: { id: string; item: string }[] = [];
+const initialData: { id: string; name: string }[] = [];
 const user: {id: number, name: string, email: string} = 
 {
   id:0,
@@ -25,12 +25,11 @@ const user: {id: number, name: string, email: string} =
 
 const UserAtom = atom(user)
 const AuthTokenAtom = atom<string | undefined>(undefined)
-const SheetIDAtom = atom('63da5d9e88970ccfe148df67'); // production
-const BACKEND_ATOM = atom('https://doto-backend.onrender.com'); // production
 
-// const SheetIDAtom = atom('63610d3bca983db268d6c2bf'); // dev
-// const BACKEND_ATOM = atom('https://dotoback.onrender.com'); // dev
-const sheetEmptyAtom = atom(true);
+const BACKEND_ATOM = atom('http://localhost:3000'); // local-dev
+
+// const BACKEND_ATOM = atom('https://dotoback.onrender.com'); // production
+
 const textAtom = atom('');
 const intHelper = atom(0);
 const idAtom = atom(1);
@@ -45,12 +44,12 @@ export {
   idAtom,
   shoppingListAtom,
   BACKEND_ATOM,
-  sheetEmptyAtom,
+  
   marginLeftAtom,
   heightAtom,
   widthAtom,
   scaleAtom,
-  SheetIDAtom,
+  
   UserAtom,
   AuthTokenAtom,
   atomStore,

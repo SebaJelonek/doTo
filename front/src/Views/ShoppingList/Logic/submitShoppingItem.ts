@@ -3,7 +3,6 @@ import { useFetch } from '../../../Fetch';
 interface SubmitFunctionInterface {
   submitFunction: (
     item: string,
-    sheetId: string,
     BACKEND: string,
     setShoppingList: (update: any) => void
   ) => void;
@@ -11,18 +10,19 @@ interface SubmitFunctionInterface {
 
 export const submitItem: SubmitFunctionInterface['submitFunction'] = (
   item,
-  sheetId,
   BACKEND,
   setShoppingList
 ) => {
-  const newItem = { item, sheetId };
+  const newItem = { item };
 
-  const response = useFetch('POST', `${BACKEND}/api/item/new`, newItem);
+  const response = useFetch('POST', `${BACKEND}/api/item`, newItem);
   response?.then((res:any) => {
     if (res.status === 200) {
+      console.log(item);
+      
       setShoppingList((prevState: (typeof newItem)[]) => [
         ...prevState,
-        { id: res._id.toString(), item },
+        { item },
       ]);
     }
   });

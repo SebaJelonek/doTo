@@ -9,11 +9,12 @@ import (
 	jwt "github.com/SebaJelonek/doTo/internals/jwt"
 )
 
-func GetTask(dbConnection *sql.DB) http.HandlerFunc {
+func Get(dbConnection *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var tasks []Task
 		var userID int
 		authToken := r.Header.Get("Authorization")
+<<<<<<< HEAD
 		sessionToken, err := r.Cookie("jwt")
 
 		if err != nil {
@@ -27,6 +28,9 @@ func GetTask(dbConnection *sql.DB) http.HandlerFunc {
 		} else {
 			userID = jwt.Decode(sessionToken.Value)
 		}
+=======
+		userID = jwt.DecodeUserID(authToken)
+>>>>>>> local-dev
 
 		rows, err := dbConnection.Query(`
 		SELECT 

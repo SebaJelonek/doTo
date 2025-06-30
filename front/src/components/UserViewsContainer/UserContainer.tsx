@@ -23,7 +23,7 @@ export const UserContainer: React.FC<Props> = ({ setId }) => {
   }, [user]);
 
   useEffect(() => {
-    const response = useFetch("GET", `${BACKEND}/`);
+    const response = useFetch("GET", `${BACKEND}/api/session`);
     response?.then((res: any) => {
       if (res !== undefined) {
         res[0].then((val: any) => {

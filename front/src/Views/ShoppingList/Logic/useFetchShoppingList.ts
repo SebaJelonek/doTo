@@ -1,29 +1,30 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useFetch } from '../../../Fetch';
 import { useAtom } from 'jotai';
 import {
   BACKEND_ATOM,
-  sheetEmptyAtom,
-  SheetIDAtom,
   shoppingListAtom,
 } from '../../../Atoms';
 
 export const useFetchShoppingList = () => {
-  const [sheetId] = useAtom(SheetIDAtom);
+
   const [BACKEND] = useAtom(BACKEND_ATOM);
-  const [, setShoppingList] = useAtom(shoppingListAtom);
-  const [, setSheetEmpty] = useAtom(sheetEmptyAtom);
-  const response = useFetch('GET', `${BACKEND}/api/sheet/${sheetId}`);
+  const [shoppingList, setShoppingList] = useAtom(shoppingListAtom);
+
+  const url = useMemo(() => `${BACKEND}/api/items`, [BACKEND]);
+
+  const response = useFetch('GET', url);
 
   useEffect(() => {
     try {
+      console.log(response !== undefined);
+      
       if (response !== undefined)
         response.then((res: any) => {
           if (res.status === 200 && res.items.length > 0) {
-            setShoppingList(res.items);
-            setSheetEmpty(false);
+           setShoppingList(res.items);
           } else {
-            setSheetEmpty(true);
+            console.log("no nic");
           }
         });
     } catch (error) {
