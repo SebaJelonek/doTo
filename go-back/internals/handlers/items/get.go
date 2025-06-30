@@ -18,19 +18,23 @@ func Get(dbConnection *sql.DB) http.HandlerFunc {
 			return
 		}
 
-		rows.Close()
+		defer rows.Close()
 
 		for rows.Next() {
 			var item Item
 
-			err := rows.Scan(&item.Name, &item.Id)
+			err := rows.Scan(&item.Id, &item.Name)
+			log.Println("item", item)
 			if err != nil {
 				log.Println("items - get - scan error", err)
 				http.Error(w, "Internal server error", 500)
 				return
 			}
+			log.Println("item", item)
 			items = append(items, item)
 		}
+
+		log.Println("items", items)
 
 		w.Header().Set("Content/Type", "application/json")
 		w.WriteHeader(200)
