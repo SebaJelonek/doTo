@@ -38,9 +38,6 @@ func StartServer(dbConnection *sql.DB) {
 
 	http.HandleFunc("/favicon.ico", middleware.Cors(handlers.Favicon))
 
-	//always last
-	http.HandleFunc("/", middleware.Cors(middleware.Auth(dbConnection, handlers.Root(dbConnection))))
-
 	port := os.Getenv("PORT")
 	fmt.Printf("starting server at port: %v\n", port)
 	http.ListenAndServe(":"+port, nil)
